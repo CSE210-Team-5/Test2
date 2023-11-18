@@ -1,10 +1,10 @@
-import requests
 from mastodon import Mastodon  # pip install Mastodon.py
 import configparser
 
 
 if __name__ == "__main__":
     parser = configparser.ConfigParser()
+    parser.read("client.ini")
     client_dict = parser["APP_TOKENS"]
 
     # The following are generated from a previous API call, when we create our app/bot.
