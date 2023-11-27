@@ -14,7 +14,7 @@ Please follow the instructions below to run the application:
 
 4.  Run flask --app feed_amalgamator init-db. This will run the SQL script and create the necessary tables for the application. 
 
-5.  Put the client.ini file in instance director.
+5.  Put the client.ini file in instance directory.
 
-6.  Run flask --app feed_amalgamator run --debug . This opens the website in your browser. In debug you can make live changes in the code which will be reflected on to the website without having restart the server. 
+6.  Run flask --app feed_amalgamator run --debug . This opens the website in your browser. In debug you can make live changes in the code which will be reflected on to the website without having to restart the server. 
 
