@@ -1,7 +1,6 @@
 import configparser
 
-from flask import (Blueprint, flash, redirect, render_template, request,
-                   session, url_for)
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from mastodon import Mastodon
 
 from feed_amalgamator.db import get_db
