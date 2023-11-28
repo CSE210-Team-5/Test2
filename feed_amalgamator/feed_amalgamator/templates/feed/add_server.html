@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Enter the domain name of server{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if is_domain_set == true %}
+<p> Please click on this <a href = "{{ url }}">link</a> and paste the obtained authorization token below </p>
+  <form method="post">
+    <label for="token">Authorization Token</label>
+    <input type="text" name="token" id="token" required>
+    <input type="submit" value="Confirm">
+  </form>
+
+{% else %}
+  <form method="post">
+    <label for="domain">Sever Domain/URL</label>
+    <input type="text" name="domain" id="domain" required>
+    <input type="submit" value="Add Server">
+  </form>
+
+{% endif %}
+{% endblock %}

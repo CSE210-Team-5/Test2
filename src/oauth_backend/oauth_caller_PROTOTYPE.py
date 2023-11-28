@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # The user will need to go to this url and perform the auth
     url = bot_m.auth_request_url(redirect_uris="urn:ietf:wg:oauth:2.0:oob", scopes=["read", "write", "push"])
     print("User should be redirected to:" + url)
-
+    """
     # User will be redirected. They can then copy an authorization code and paste it into the application.
     auth_code = "THIS IS THE USER'S AUTH CODE THAT THEY CAN COPY IN"
 
@@ -41,4 +41,6 @@ if __name__ == "__main__":
 
     # Base url is different for every different mastodon server
     # form = show_auth_form(CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN)
-
+    with open("sample_data.json", 'w') as f:
+        json.dump(timeline, f, default=str)
+    """
