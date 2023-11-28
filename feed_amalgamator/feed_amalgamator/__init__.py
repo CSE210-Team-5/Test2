@@ -1,7 +1,8 @@
 import os
 
 from flask import Flask, redirect, url_for
-
+from . import db
+from . import auth, feed
 
 def create_app(test_config=None):
     # create and configure the app
@@ -24,9 +25,8 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from . import db
     db.init_app(app)
-    from . import auth, feed
+
     app.register_blueprint(auth.bp)
     app.register_blueprint(feed.bp)
 

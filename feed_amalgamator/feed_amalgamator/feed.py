@@ -1,14 +1,12 @@
+import configparser
 import functools
 
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
-)
-from werkzeug.security import check_password_hash, generate_password_hash
 
-from feed_amalgamator.db import get_db
+from flask import (Blueprint, flash, g, redirect, render_template, request,
+                   session, url_for)
 from mastodon import Mastodon
-
-import configparser
+from werkzeug.security import check_password_hash, generate_password_hash
+from feed_amalgamator.db import get_db
 
 bp = Blueprint('feed', __name__, url_prefix='/feed')
 
