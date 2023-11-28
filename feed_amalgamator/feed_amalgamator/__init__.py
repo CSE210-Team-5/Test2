@@ -1,8 +1,8 @@
 import os
 
 from flask import Flask, redirect, url_for
-from . import db
-from . import auth, feed
+
+from . import auth, db, feed
 
 
 def create_app(test_config=None):

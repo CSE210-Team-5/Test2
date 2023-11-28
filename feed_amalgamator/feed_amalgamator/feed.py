@@ -1,19 +1,9 @@
 import configparser
-import functools
 
-
-from flask import (
-    Blueprint,
-    flash,
-    g,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, flash, redirect, render_template, request,
+                   session, url_for)
 from mastodon import Mastodon
-from werkzeug.security import check_password_hash, generate_password_hash
+
 from feed_amalgamator.db import get_db
 
 bp = Blueprint("feed", __name__, url_prefix="/feed")
@@ -112,7 +102,7 @@ def add_server():
                     )
                     db.commit()
                 except db.IntegrityError:
-                    error = f"Record already exists."
+                    error = "Record already exists."
                 else:
                     return redirect(url_for("feed.add_server", is_domain_set=False))
 
