@@ -15,5 +15,5 @@ Please follow the instructions below to run the application:
 
 5. Put the client.ini file in instance directory.
 
-6. Run `flask --app feed_amalgamator run --debug` . This opens the site in your browser. In debug you can make live changes in the code which will be reflected on to the site without having to restart the server.
+6. Run `flask --app feed_amalgamator run --debug` . This opens the site in your browser. In debug mode you can make live changes in the code which will be reflected on to the site without having to restart the server.
 
