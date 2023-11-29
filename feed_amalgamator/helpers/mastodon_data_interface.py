@@ -12,7 +12,7 @@ from feed_amalgamator.helpers.custom_exceptions import InvalidApiInputError, Mas
 
 class MastodonDataInterface:
     """Adapter Class for responsible for handling API calls for data processing AFTER Oauth.
-     All calls to the API during the user Oauth process should go through this layer to insulate code from third party
+     All calls to the API after oauth should go through this layer to insulate code from third party
      libraries.
     """
     def __init__(self, logger: logging.Logger):
