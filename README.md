@@ -10,7 +10,7 @@ Please follow the instructions below to run the application:
 
 3. Install pdm - `pip install pdm`
 
-4. Navigate to the project directory and run `pdm init`. This will automatically detect all python versions installed in your system and ask you to choose one. Choose python 3.11.5. When asked if you would like to create a new virtualenv answer "Yes". This will create a virtual environment specific to the project. 
+4. Navigate to the project directory and run `pdm init`. This will automatically detect all python versions installed in your system and ask you to choose one. Choose python 3.11.5. When asked if you would like to create a new virtualenv answer "Yes". This will create a virtual environment specific to the project. You can ignore the other questions asked and skip them by pressing "Enter".
 
 5. Run `pdm install`. This will resolve all dependency conflicts and install the required packages inside the projects folder and create a `pdm.lock` file.
 
