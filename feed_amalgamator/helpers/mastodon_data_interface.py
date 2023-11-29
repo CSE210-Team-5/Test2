@@ -51,7 +51,7 @@ class MastodonDataInterface:
             raise MastodonConnError(conn_error_msg)
 
     # === Functions to get data from here on out =====
-    def get_raw_timeline_data(self, timeline_name: str, num_posts_to_get: int, num_tries=3):
+    def get_timeline_data(self, timeline_name: str, num_posts_to_get: int, num_tries=3):
         """
         @param timeline_name: Name of the timeline to get data from
         @param num_posts_to_get: Number of posts to obtain from the timeline
