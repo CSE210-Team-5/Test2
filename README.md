@@ -6,7 +6,7 @@ Please follow the instructions below to run the application:
 
 1. Install Pycharm - <https://www.jetbrains.com/pycharm/download/?section=windows>. You can install any IDE that you like. But it is recommended to use Pycharm to keep the development environment clean.
 
-2. Install python 3.11.5 - https://www.python.org/downloads/release/python-3115/
+2. Install python 3.11.5 - <https://www.python.org/downloads/release/python-3115/>
 
 3. Install pdm - `pip install pdm`
 
@@ -16,7 +16,7 @@ Please follow the instructions below to run the application:
 
 6. Now when you open the project using pycharm it would automatically detect the virtual environment present inside the project folder and will choose that as the default interpreter.
 
-7. Restart the terminal inside Pycharm. 
+7. Restart the terminal inside Pycharm.
 
 8. Run `flask --app feed_amalgamator init-db`. This will run the SQL script and create the necessary tables for the application.
 
