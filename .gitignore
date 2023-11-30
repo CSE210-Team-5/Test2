@@ -6,27 +6,23 @@ __pycache__/
 
 instance/
 
-<<<<<<< HEAD
 */.pytest_cache/
 =======
 .pytest_cache/
->>>>>>> c8200219304c01473ccbf33a97c48cc15ec9a483
 .coverage
 htmlcov/
 
 dist/
 build/
 *.egg-info/
-<<<<<<< HEAD
 
 *.ini
+
+.idea/
+feed_amalgamator/.idea
+*.log
 
 configuration/
 prototypes/
 tests/test_config
 tests/test_logs
-
-=======
-.idea/
-feed_amalgamator/.idea
->>>>>>> c8200219304c01473ccbf33a97c48cc15ec9a483

@@ -8,13 +8,11 @@ from mastodon import Mastodon
 from sqlalchemy import exc
 
 from feed_amalgamator.db import get_db
-
-from feed_amalgamator.helpers.constants import USER_DOMAIN_FIELD, LOGIN_TOKEN_FIELD, USER_ID_FIELD
 from feed_amalgamator.helpers.custom_exceptions import MastodonConnError
 from feed_amalgamator.helpers.logging_helper import LoggingHelper
 from feed_amalgamator.helpers.mastodon_data_interface import MastodonDataInterface
 from feed_amalgamator.helpers.mastodon_oauth_interface import MastodonOAuthInterface
-from feed_amalgamator.helpers.db_interface import dbi, UserServer
+from feed_amalgamator.helpers.db_interface import dbi, UserServer, User
 
 """
 Notes from discussion with Professor:
@@ -34,41 +32,42 @@ auth_api = MastodonOAuthInterface(CONFIG_FILE_LOC, logger)
 data_api = MastodonDataInterface(logger)
 
 # TODO - Add Swagger/OpenAPI documentation
+# TODO - Standardize how exceptions are raised and parsed throughout flask
+# TODO - Business logic of home feed (deciding what to filter etc.)
+
+# Defining constants
+POSTS_PER_TIMELINE = 20  # Better in a configuration file? Or hard code?
+HOME_TIMELINE_NAME = "home"
+USER_DOMAIN_FIELD = "domain"
+LOGIN_TOKEN_FIELD = "token"
+USER_ID_FIELD = "user_id"
+
 
 @bp.route("/home", methods=["GET"])
 def feed_home():
     if request.method == "GET":
-        user_id = session["user_id"]
-        db = get_db()
-        error = None
-        user_servers = db.execute(
-            "SELECT * FROM user_server WHERE user_id = ?", (user_id,)
-        ).fetchall()
-
+        provided_user_id = session[USER_ID_FIELD]
+        user_servers = dbi.session.execute(dbi.select(UserServer).filter_by(user_id=provided_user_id)).all()
         if user_servers is None:
-            error = "Invalid User"
-        timelines = []
-        if error is None:
-            parser = configparser.ConfigParser()
-            parser.read(CONFIG_FILE_LOC)
-            client_dict = parser["APP_TOKENS"]
-            CLIENT_ID = client_dict["CLIENT_ID"]
-            CLIENT_SECRET = client_dict["CLIENT_SECRET"]
-            ACCESS_TOKEN = client_dict["ACCESS_TOKEN"]
-            for user_server in user_servers:
-                domain = user_server["server"]
-                users_access_token = user_server["token"]
-
-                user_client = Mastodon(
-                    access_token=users_access_token, api_base_url=domain
-                )
-                timeline = user_client.timeline(timeline="home", limit=20)
+            flash("Invalid User")  # issue with hard coded error messages - see below
+            logger.error("No user servers found that are tied to user id {i}".format(i=provided_user_id))
+            raise Exception  # TODO: We need to standardize how exceptions are raised and parsed in flask.
+        else:
+            logger.info("Found {n} servers tied to user id {i}".format(n=len(user_servers), i=provided_user_id))
+            timelines = []
+            for user_server_tuple in user_servers:
+                # user_servers is a list of tuples. The object is the first element of the tuple
+                user_server = user_server_tuple[0]
+                # These are user_server objects defined in the data interface. Treat them like python objects
+                server_domain = user_server.server
+                access_token = user_server.token
+                data_api.start_user_api_client(user_domain=server_domain, user_access_token=access_token)
+                # TODO: This will need to be processed (filtered, sorted etc.) by a helper class
+                timeline = data_api.get_timeline_data(HOME_TIMELINE_NAME, POSTS_PER_TIMELINE)
                 timelines.append(timeline)
-            return render_template("feed/home.html", timelines=timelines)
+                return render_template("feed/home.html", timelines=timelines)
 
-        flash(error)
-
-    return render_template("feed/home.html", timelines=None)
+    return render_template("feed/home.html", timelines=None)  # Default return
 
 
 @bp.route("/add_server", methods=["GET", "POST"])
@@ -148,60 +147,3 @@ def generate_auth_code_error_message(authentication_token: str | None, user_id: 
     elif not user_domain:
         error = "Domain is required"
     return error
-
-
-"""
-@bp.route("/add_server", methods=["GET", "POST"])
-def add_server():
-    if request.method == "POST":
-        if "domain" in request.form:
-            domain = request.form["domain"]
-            session["domain"] = domain
-            parser = configparser.ConfigParser()
-            parser.read("instance/client.ini")
-            client_dict = parser["APP_TOKENS"]
-            CLIENT_ID = client_dict["CLIENT_ID"]
-            CLIENT_SECRET = client_dict["CLIENT_SECRET"]
-            ACCESS_TOKEN = client_dict["ACCESS_TOKEN"]
-            USERS_DOMAIN = "https://mastodon.social"
-            bot_m = Mastodon(
-                client_id=CLIENT_ID,
-                client_secret=CLIENT_SECRET,
-                access_token=ACCESS_TOKEN,
-                api_base_url=USERS_DOMAIN,
-            )
-            url = bot_m.auth_request_url(
-                redirect_uris="urn:ietf:wg:oauth:2.0:oob",
-                scopes=["read", "write", "push"],
-            )
-            return render_template("feed/add_server.html", url=url, is_domain_set=True)
-
-        elif "token" in request.form:
-            auth_token = request.form["token"]
-            user_id = session["user_id"]
-            domain = session["domain"]
-            db = get_db()
-            error = None
-            if not auth_token:
-                error = "Authorization Token in Required"
-            elif not user_id:
-                error = "Password is required."
-            elif not domain:
-                error = "domain is required"
-
-            if error is None:
-                try:
-                    db.execute(
-                        "INSERT INTO user_server (user_id, server, token) VALUES (?, ?, ?)",
-                        (user_id, domain, auth_token),
-                    )
-                    db.commit()
-                except db.IntegrityError:
-                    error = "Record already exists."
-                else:
-                    return redirect(url_for("feed.add_server", is_domain_set=False))
-
-            flash(error)
-
-    return render_template("feed/add_server.html", is_domain_set=False)
-"""

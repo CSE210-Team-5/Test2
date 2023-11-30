@@ -37,10 +37,12 @@ class MastodonDataInterface:
         @return: None, but side effect of setting user_client
         """
         try:
+            self.logger.info("Starting user api client")
             client = Mastodon(access_token=user_access_token, api_base_url=user_domain)
             # Getting 1 post from timeline to sanity check if the user access token was valid
             client.timeline(timeline="home", limit=1)
             self.user_client = client
+            self.logger.info("Successfully started user API client")
         except mastodon.errors.MastodonUnauthorizedError:
             error_msg = "start_user_api_client failed as the access token provided was invalid"
             self.logger.error(error_msg)
@@ -61,8 +63,10 @@ class MastodonDataInterface:
         assert self.user_client is not None, "User client has not been started"
         for i in range(num_tries):
             try:
+                self.logger.info("Starting to get timeline data")
                 timeline = self.user_client.timeline(timeline=timeline_name, limit=num_posts_to_get)
                 standardized_timeline = self._standardize_api_objects(timeline)
+                self.logger.info("Successfully obtained timeline data")
                 return standardized_timeline
             except (ConnectionError, MastodonAPIError) as err:
                 self.logger.error("Encountered error {e} in start_user_api_client."
