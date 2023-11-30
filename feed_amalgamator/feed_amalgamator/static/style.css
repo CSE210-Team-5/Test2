@@ -1,185 +1,187 @@
 h1 {
-    color: #fff
+  color: #fff;
 }
 
 body {
-    font-family: sans-serif;
-    background: #292C36;
-    text-decoration: none;
-    margin: 0;
-    padding: 0;
+  font-family: sans-serif;
+  background: #292c36;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
 }
 
 a {
-    color: #8c8dff;
+  color: #8c8dff;
 }
 
 .status {
-    animation: fade .15s linear;
-    border-bottom: 1px solid #393f4f;
-    cursor: auto;
-    min-height: 54px;
-    opacity: 1;
-    padding: 16px;
+  animation: fade 0.15s linear;
+  border-bottom: 1px solid #393f4f;
+  cursor: auto;
+  min-height: 54px;
+  opacity: 1;
+  padding: 16px;
 }
 
-.status__info {
-    align-items: center;
-    display: flex;
-    font-size: 15px;
-    gap: 10px;
-    line-height: 22px;
-    max-width: 100%;
-    overflow: hidden;
+.status-info {
+  align-items: center;
+  display: flex;
+  font-size: 15px;
+  gap: 10px;
+  line-height: 22px;
+  max-width: 100%;
+  overflow: hidden;
 }
 
-.display-name__html {
-    color: #fff;
+.display-name-html {
+  color: #fff;
 }
 
-.display-name__account {
-    color: #606984;
-    display: block;
+.display-name-account {
+  color: #606984;
+  display: block;
 }
 
-.status__avatar {
-    height: 46px;
-    width: 46px;
+.status-avatar {
+  height: 46px;
+  width: 46px;
 }
 
-.account__avatar img {
-    display: block;
-    height: 100%;
-    -o-object-fit: cover;
-    object-fit: cover;
-    width: 100%;
+.account-avatar img {
+  display: block;
+  height: 100%;
+
+  /* -o-object-fit: cover; */
+  object-fit: cover;
+  width: 100%;
 }
 
 article {
-    border-bottom: 1px solid #393f4f;
+  border-bottom: 1px solid #393f4f;
 }
 
-.status__content {
-    word-wrap: break-word;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 22px;
-    overflow: hidden;
-    padding-top: 2px;
-    position: relative;
-    text-overflow: ellipsis;
+.status-content {
+  word-wrap: break-word;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  overflow: hidden;
+  padding-top: 2px;
+  position: relative;
+  text-overflow: ellipsis;
 }
 
-.status__content p {
-    margin-bottom: 22px;
-    unicode-bidi: plaintext;
-    white-space: pre-wrap;
+.status-content p {
+  margin-bottom: 22px;
+  unicode-bidi: plaintext;
+  white-space: pre-wrap;
 }
 
 nav {
-    background-color: #6464F8;
-    /* padding: 5px; */
-    padding-right: 15px;
-    padding-left: 15px;
+  background-color: #6464f8;
+
+  /* padding: 5px; */
+  padding-right: 15px;
+  padding-left: 15px;
 }
 
 .navdiv {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 li {
-    list-style: none;
-    display: inline-block;
+  list-style: none;
+  display: inline-block;
 }
 
 li a {
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    margin-right: 25px;
-    text-decoration: none;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 25px;
+  text-decoration: none;
 }
 
 .profile-picture {
-    border-radius: 100%;
-    height: 36px;
-    width: 36px;
-    padding-left: 5px;
+  border-radius: 100%;
+  height: 36px;
+  width: 36px;
+  padding-left: 5px;
 }
 
 li a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 li .username {
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    margin-right: 25px;
-    display: flex;
-    align-items: center;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 25px;
+  display: flex;
+  align-items: center;
 }
 
 li .username:hover {
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    margin-right: 25px;
-    text-decoration: underline;
-    cursor: pointer;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 25px;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .logo {
-    font-size: 35px;
-    font-weight: 600;
-    color: white;
+  font-size: 35px;
+  font-weight: 600;
+  color: white;
 }
 
 .logo:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .add-server-title {
-    text-align: center;
+  text-align: center;
 }
 
 .enter-domain {
-    text-align: center;
-    color: white;
+  text-align: center;
+  color: white;
 }
 
-input[type=text] {
-    /* outline: #8c8dff;
+input[type="text"] {
+  /* outline: #8c8dff;
     border-radius: 5px;
     height: 30px; */
-    border: 1px solid #0a0b0e;
-    border-radius: 4px;
-    box-sizing: border-box;
-    color: black;
-    font-family: inherit;
-    font-size: 16px;
-    outline: 0;
-    padding: 10px;
-    resize: vertical;
+  border: 1px solid #0a0b0e;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: black;
+  font-family: inherit;
+  font-size: 16px;
+  outline: 0;
+  padding: 10px;
+  resize: vertical;
 }
 
 .add-server-btn {
-    margin-top: 10px;
-    background-color: #6364ff;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
+  margin-top: 10px;
+  background-color: #6364ff;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
 }
 
-.add-server-btn:hover{
-    background-color: #563acc;
-    cursor: pointer;
+.add-server-btn:hover {
+  background-color: #563acc;
+  cursor: pointer;
 }

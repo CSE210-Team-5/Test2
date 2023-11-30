@@ -8,20 +8,20 @@
 {% for post in timeline %}
 <article>
   <div class="status">
-    <div class="status__info">
-      <div class="status__avatar">
-        <div class="account__avatar">
+    <div class="status-info">
+      <div class="status-avatar">
+        <div class="account-avatar">
           <img src="{{ post['account']['avatar']}}">
         </div>
       </div>
       <span class="display-name">
         <bdi>
-          <strong class="display-name__html">{{ post['account']['display_name'] }}</strong>
+          <strong class="display-name-html">{{ post['account']['display_name'] }}</strong>
         </bdi>
-        <span class="display-name__account">{{ post['account']['acct'] }}</span>
+        <span class="display-name-account">{{ post['account']['acct'] }}</span>
       </span>
     </div>
-    <div class="status__content">
+    <div class="status-content">
       {{ post['content']|safe }}
     </div>
   </div>
