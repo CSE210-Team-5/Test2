@@ -7,9 +7,10 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 from mastodon import Mastodon
 from sqlalchemy import exc
 
-from feed_amalgamator.helpers.constants import USER_DOMAIN_FIELD, LOGIN_TOKEN_FIELD, USER_ID_FIELD
-from feed_amalgamator.helpers.custom_exceptions import InvalidApiInputError, MastodonConnError
 from feed_amalgamator.db import get_db
+
+from feed_amalgamator.helpers.constants import USER_DOMAIN_FIELD, LOGIN_TOKEN_FIELD, USER_ID_FIELD
+from feed_amalgamator.helpers.custom_exceptions import MastodonConnError
 from feed_amalgamator.helpers.logging_helper import LoggingHelper
 from feed_amalgamator.helpers.mastodon_data_interface import MastodonDataInterface
 from feed_amalgamator.helpers.mastodon_oauth_interface import MastodonOAuthInterface
@@ -49,7 +50,7 @@ def feed_home():
         timelines = []
         if error is None:
             parser = configparser.ConfigParser()
-            parser.read("instance/client.ini")
+            parser.read(CONFIG_FILE_LOC)
             client_dict = parser["APP_TOKENS"]
             CLIENT_ID = client_dict["CLIENT_ID"]
             CLIENT_SECRET = client_dict["CLIENT_SECRET"]
@@ -78,6 +79,7 @@ def add_server():
             return render_redirect_url_page()
         elif LOGIN_TOKEN_FIELD in request.form:
             return render_input_auth_code_page()
+    return render_template("feed/add_server.html", is_domain_set=False)
 
 
 def render_redirect_url_page():
@@ -125,7 +127,6 @@ def render_input_auth_code_page():
             # Executes if there is no exception
             return redirect(url_for("feed.add_server", is_domain_set=False))
     flash(error)
-    return render_template("feed/add_server.html", is_domain_set=False)
 
 
 def generate_auth_code_error_message(authentication_token: str | None, user_id: str | None,
