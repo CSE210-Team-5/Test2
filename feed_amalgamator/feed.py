@@ -4,9 +4,13 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 from mastodon import Mastodon
 
 from feed_amalgamator.db import get_db
-
 bp = Blueprint("feed", __name__, url_prefix="/feed")
 
+
+# No abstraction, security, happy path (code only thinks about things that go wrong, not robust code)
+# magic values, sql injection, robustness
+# What does it mean to be done?
+# Swagger file. OpenAPI format
 
 @bp.route("/home", methods=["GET"])
 def feed_home():

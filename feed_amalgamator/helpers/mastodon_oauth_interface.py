@@ -4,14 +4,19 @@ Any module interacting with the Mastodon API for Oauth purposes should do so str
 
 import configparser
 import logging
-
+import json
 import mastodon.errors
 import requests
 from urllib.parse import urlparse
 from http import HTTPStatus
-import json
+
 from mastodon import Mastodon, MastodonAPIError  # pip install Mastodon.py
 from feed_amalgamator.helpers.custom_exceptions import MastodonConnError, InvalidApiInputError
+
+# Add more logging levels (info etc. - forgot about this)
+# Segment https error types to become more descriptive
+# Need to test the third party api thoroughly (definitely need to sanity check the url)
+# Eg. test that data fields that are needed are returned; create a weird fizzborb to create "deterministic" tests
 
 
 class MastodonOAuthInterface:
@@ -36,7 +41,7 @@ class MastodonOAuthInterface:
         self.logger = logger
         """This is the client used to authenticate users. Generated using our app's down details"""
         self.app_client = None
-        """Hard coded required scopes for the app to work"""
+        """Hard coded required scopes for the app to work. Revisit if the scope changes"""
         self.REQUIRED_SCOPES = ["read", "write", "push"]
         """The redirect URI required by the API to generate certain urls"""
         self.REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
@@ -61,6 +66,7 @@ class MastodonOAuthInterface:
         except requests.exceptions.ConnectionError as e:
             # If the user domain is invalid, it is indistinguishable from a connection error (cannot resolve
             # the domain of the redirected url)
+            # Increase granularity of http error logging (500?400?)
             self.logger.error("ConnectionError {e} trying to verify user provided domain. User provided domain"
                               "is either invalid, or there is a connection problem".format(e=e))
 
