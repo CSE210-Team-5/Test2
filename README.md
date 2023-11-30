@@ -8,13 +8,12 @@ Please follow the instructions below to run the application:
 
 2. Install Conda - <https://www.anaconda.com/download/>
 
-3. Create a new conda python environment using Python version 3.11.5.
-    conda create -n [environment name here] python=3.11.5
-    conda create --name [environment name here] --file requirements.txt
+3. Create a new conda python environment using feedamalgamtor.yml file.
+    `conda env create -f feedamalgamator.yaml`
 
-4. Run flask --app feed_amalgamator init-db. This will run the SQL script and create the necessary tables for the application.
+4. Run `flask --app feed_amalgamator init-db`. This will run the SQL script and create the necessary tables for the application.
 
 5. Put the client.ini file in instance directory.
 
-6. Run flask --app feed_amalgamator run --debug . This opens the site in your browser. In debug you can make live changes in the code which will be reflected on to the site without having to restart the server.
+6. Run `flask --app feed_amalgamator run --debug` . This opens the site in your browser. In debug mode you can make live changes in the code which will be reflected on to the site without having to restart the server.
 
