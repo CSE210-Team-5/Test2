@@ -22,30 +22,11 @@ def feed_home():
             error = "Invalid User"
         timelines = []
         if error is None:
-            parser = configparser.ConfigParser()
-            parser.read("instance/client.ini")
-            client_dict = parser["APP_TOKENS"]
-            CLIENT_ID = client_dict["CLIENT_ID"]
-            CLIENT_SECRET = client_dict["CLIENT_SECRET"]
-            ACCESS_TOKEN = client_dict["ACCESS_TOKEN"]
             for user_server in user_servers:
                 domain = user_server["server"]
                 token = user_server["token"]
-                bot_m = Mastodon(
-                    client_id=CLIENT_ID,
-                    client_secret=CLIENT_SECRET,
-                    access_token=ACCESS_TOKEN,
-                    api_base_url=domain,
-                )
                 print(domain, token)
-                users_access_token = bot_m.log_in(
-                    code=token,
-                    redirect_uri="urn:ietf:wg:oauth:2.0:oob",
-                    scopes=["read", "write", "push"],
-                )
-                user_client = Mastodon(
-                    access_token=users_access_token, api_base_url=domain
-                )
+                user_client = Mastodon(access_token=token, api_base_url=domain)
                 timeline = user_client.timeline(timeline="home", limit=20)
                 timelines.append(timeline)
             return render_template("feed/home.html", timelines=timelines)
@@ -84,6 +65,23 @@ def add_server():
             auth_token = request.form["token"]
             user_id = session["user_id"]
             domain = session["domain"]
+            parser = configparser.ConfigParser()
+            parser.read("instance/client.ini")
+            client_dict = parser["APP_TOKENS"]
+            CLIENT_ID = client_dict["CLIENT_ID"]
+            CLIENT_SECRET = client_dict["CLIENT_SECRET"]
+            ACCESS_TOKEN = client_dict["ACCESS_TOKEN"]
+            bot_m = Mastodon(
+                client_id=CLIENT_ID,
+                client_secret=CLIENT_SECRET,
+                access_token=ACCESS_TOKEN,
+                api_base_url=domain,
+            )
+            users_access_token = bot_m.log_in(
+                code=auth_token,
+                redirect_uri="urn:ietf:wg:oauth:2.0:oob",
+                scopes=["read", "write", "push"],
+            )
             db = get_db()
             error = None
             if not auth_token:
@@ -97,7 +95,7 @@ def add_server():
                 try:
                     db.execute(
                         "INSERT INTO user_server (user_id, server, token) VALUES (?, ?, ?)",
-                        (user_id, domain, auth_token),
+                        (user_id, domain, users_access_token),
                     )
                     db.commit()
                 except db.IntegrityError:

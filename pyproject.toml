@@ -1,0 +1,16 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "Srinivas Raman", email = "srinivasraman18@gmail.com"},
+    {name = "BugsBunny", email = "bugsbunny@gmail.com"},
+]
+dependencies = [
+    "flask>=3.0.0",
+    "Mastodon-py>=1.8.1",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
