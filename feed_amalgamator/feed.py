@@ -89,8 +89,8 @@ def render_redirect_url_page():
     logger.info("Rendering redirect url for user inputted domain {d}".format(d=domain))
     session[USER_DOMAIN_FIELD] = domain  # CWJ: What does this do
 
-    valid_domain, parsed_domain = auth_api.verify_user_provided_domain(domain)
-    if not valid_domain:
+    is_valid_domain, parsed_domain = auth_api.verify_user_provided_domain(domain)
+    if not is_valid_domain:
         logger.error("User inputted domain {d} was not a valid mastodon domain. "
                      "Failed to render redirect url page".format(d=domain))
         raise Exception  # TODO: We will need to standardize how to handle exceptions in the flask context.
