@@ -102,7 +102,7 @@ def render_redirect_url_page():
 
 
 def render_input_auth_code_page():
-    """Helper function to handle the logic for allowing users to input the
+    """Helper function to handle the logic for allowing users to input the auth code.
     Should inherit the request and session of add_server"""
     auth_token = request.form[LOGIN_TOKEN_FIELD]
     user_id = session[USER_ID_FIELD]
