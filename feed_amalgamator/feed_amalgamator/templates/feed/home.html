@@ -1,12 +1,36 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Register{% endblock %}</h1>
+<h1>{% block title %}Register{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <p><a href="{{ url_for('feed.add_server') }}">Add Server</a></p>
-  {% if timelines is not none %}
-{{ timelines }}
+<p><a href="{{ url_for('feed.add_server') }}">Add Server</a></p>
+{% if timelines is not none %}
+
+{% for timeline in timelines %}
+{% for post in timeline %}
+<article>
+  <div class="status">
+    <div class="status__info">
+      <div class="status__avatar">
+        <div class="account__avatar">
+          <img src="{{ post['account']['avatar']}}">
+        </div>
+      </div>
+      <span class="display-name">
+        <bdi>
+          <strong class="display-name__html">{{ post['account']['display_name'] }}</strong>
+        </bdi>
+        <span class="display-name__account">{{ post['account']['acct'] }}</span>
+      </span>
+    </div>
+    <div class="status__content">
+      {{ post['content']|safe }}
+    </div>
+  </div>
+</article>
+{% endfor %}
+{% endfor %}
 {% endif %}
 {% endblock %}

@@ -1,0 +1,75 @@
+h1 {
+    color: #fff
+}
+
+body {
+    font-family: sans-serif;
+    background: #292C36;
+}
+
+a {
+    color: #8c8dff;
+}
+
+.status {
+    animation: fade .15s linear;
+    border-bottom: 1px solid #393f4f;
+    cursor: auto;
+    min-height: 54px;
+    opacity: 1;
+    padding: 16px;
+}
+
+.status__info {
+    align-items: center;
+    display: flex;
+    font-size: 15px;
+    gap: 10px;
+    line-height: 22px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.display-name__html {
+    color: #fff;
+}
+
+.display-name__account {
+    color: #606984;
+    display: block;
+}
+
+.status__avatar {
+    height: 46px;
+    width: 46px;
+}
+
+.account__avatar img {
+    display: block;
+    height: 100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+    width: 100%;
+}
+
+article {
+    border-bottom: 1px solid #393f4f;
+}
+
+.status__content {
+    word-wrap: break-word;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 22px;
+    overflow: hidden;
+    padding-top: 2px;
+    position: relative;
+    text-overflow: ellipsis;
+}
+
+.status__content p {
+    margin-bottom: 22px;
+    unicode-bidi: plaintext;
+    white-space: pre-wrap;
+}
