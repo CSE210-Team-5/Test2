@@ -1,5 +1,6 @@
 import functools
-
+import logging
+import configparser
 from flask import (
     Blueprint,
     flash,
@@ -10,11 +11,14 @@ from flask import (
     session,
     url_for,
 )
+
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from feed_amalgamator.db import get_db
+from feed_amalgamator.db import get_db  # Old implementation
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+# Setup for logging and interface layers
 
 
 @bp.route("/register", methods=("GET", "POST"))

@@ -3,13 +3,14 @@ import os
 from flask import Flask, redirect, url_for
 
 from . import auth, db, feed
+from helpers.db_interface import dbi
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY="dev",
+        SECRET_KEY="dev",  # Probably something that should not be hard coded in plaintext
         DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
     )
 
@@ -30,6 +31,8 @@ def create_app(test_config=None):
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(feed.bp)
+
+    # Added to test dbi.init_app(app)
 
     @app.route("/", methods=["GET"])
     def redirect_internal():

@@ -5,6 +5,8 @@ Any module interacting with the Mastodon API for Oauth purposes should do so str
 import configparser
 import logging
 import json
+from pathlib import Path
+
 import mastodon.errors
 import requests
 from urllib.parse import urlparse
@@ -25,7 +27,7 @@ class MastodonOAuthInterface:
     code from third party libraries.
     API calls for data processing AFTER Oauth is under the responsibility of MastodonDataInterface
     """
-    def __init__(self, config_file_loc: str, logger: logging.Logger):
+    def __init__(self, config_file_loc: Path, logger: logging.Logger):
         parser = configparser.ConfigParser()
         parser.read(config_file_loc)
 
@@ -106,6 +108,7 @@ class MastodonOAuthInterface:
             self.app_client = client
         except (ConnectionError, MastodonAPIError) as err:
             self.logger.error("Encountered {e} when trying to start app_client".format(e=err))
+            raise MastodonConnError("API client failed to start")
 
     def generate_redirect_url(self, num_tries=3) -> str:
         """

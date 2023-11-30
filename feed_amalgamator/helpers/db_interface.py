@@ -8,23 +8,22 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 class Base(DeclarativeBase):
     pass
 
-
-db = SQLAlchemy()  # Not initialized without the app
-
-
-class User(db.Model):
-    __tablename__ = "users"
-    user_id: Mapped[int] = mapped_column(db.Integer, primary_key=True)  # table index
-    username: Mapped[str] = mapped_column(db.String, nullable=False)
-    hashed_password: Mapped[str] = mapped_column(db.String, nullable=False)
-    salt: Mapped[int] = mapped_column(db.Integer, nullable=False)
+# dbi = db interface
+dbi = SQLAlchemy()  # Not initialized without the app
 
 
-class UserServers(db.Model):
-    __tablename__ = "user_servers"
-    user_server_id: Mapped[int] = mapped_column(db.Integer, primary_key=True)  # table index
-    user_id: Mapped[int] = mapped_column(db.Integer, db.ForeignKey("users.user_id"))
-    server_url: Mapped[str] = mapped_column(db.String, nullable=False)
+class User(dbi.Model):
+    __tablename__ = "user"
+    user_id: Mapped[int] = mapped_column(dbi.Integer, primary_key=True, autoincrement=True, name="id")
+    username: Mapped[str] = mapped_column(dbi.String, nullable=False, unique=True, name="username")
+    password: Mapped[str] = mapped_column(dbi.String, nullable=False, name="password")
+
+
+class UserServer(dbi.Model):
+    __tablename__ = "user_server"
+    user_server_id: Mapped[int] = mapped_column(dbi.Integer, primary_key=True, autoincrement=True, name="id")
+    user_id: Mapped[int] = mapped_column(dbi.Integer, dbi.ForeignKey("user.id"), name="user_id")
+    server: Mapped[str] = mapped_column(dbi.String, nullable=False, name="server")
     """TODO - For future versions of the project. The access token to the third party api is stored as plaintext
     at the moment. Coming up with a solution is not viable for this sprint"""
-    oauth: Mapped[str] = mapped_column(db.String(80), nullable=False)
+    token: Mapped[str] = mapped_column(dbi.String, nullable=False, name="token")
