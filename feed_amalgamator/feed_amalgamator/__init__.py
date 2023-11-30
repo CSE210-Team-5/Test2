@@ -33,6 +33,6 @@ def create_app(test_config=None):
 
     @app.route("/", methods=["GET"])
     def redirect_internal():
-        return redirect(url_for("auth.register"))
+        return redirect(url_for("auth.login"))
 
     return app

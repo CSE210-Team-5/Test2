@@ -49,6 +49,10 @@ def register():
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
+    # If already logged in, forward to home page
+    if g.user:
+        return redirect(url_for("feed.feed_home"))
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -88,7 +92,7 @@ def load_logged_in_user():
 @bp.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("auth.register"))
+    return redirect(url_for("auth.login"))
 
 
 def login_required(view):
