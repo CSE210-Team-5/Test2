@@ -18,12 +18,18 @@ if __name__ == "__main__":
     USERS_DOMAIN = "https://mastodon.social"
 
     # This is our bot/app's api client
-    bot_m = Mastodon(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, access_token=ACCESS_TOKEN,
-                     api_base_url=USERS_DOMAIN)
+    bot_m = Mastodon(
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        access_token=ACCESS_TOKEN,
+        api_base_url=USERS_DOMAIN,
+    )
 
     # This will generate a url that we should show to the user.
     # The user will need to go to this url and perform the auth
-    url = bot_m.auth_request_url(redirect_uris="urn:ietf:wg:oauth:2.0:oob", scopes=["read", "write", "push"])
+    url = bot_m.auth_request_url(
+        redirect_uris="urn:ietf:wg:oauth:2.0:oob", scopes=["read", "write", "push"]
+    )
     print("User should be redirected to:" + url)
     """
     # User will be redirected. They can then copy an authorization code and paste it into the application.
