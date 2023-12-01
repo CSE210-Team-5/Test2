@@ -6,6 +6,8 @@ __pycache__/
 
 instance/
 
+*/.pytest_cache/
+=======
 .pytest_cache/
 .coverage
 htmlcov/
@@ -13,8 +15,17 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+*.ini
+
 .idea/
 feed_amalgamator/.idea
+*.log
+
+configuration/
+prototypes/
+tests/test_config
+tests/test_logs
 src
 pdm.lock
 .pdm-python
