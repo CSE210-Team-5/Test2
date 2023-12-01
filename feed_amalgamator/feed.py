@@ -7,7 +7,6 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 from mastodon import Mastodon
 from sqlalchemy import exc
 
-from feed_amalgamator.db import get_db
 from feed_amalgamator.helpers.custom_exceptions import MastodonConnError
 from feed_amalgamator.helpers.logging_helper import LoggingHelper
 from feed_amalgamator.helpers.mastodon_data_interface import MastodonDataInterface

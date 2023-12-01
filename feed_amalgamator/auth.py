@@ -20,8 +20,6 @@ from feed_amalgamator.helpers.logging_helper import LoggingHelper
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from feed_amalgamator.db import get_db  # Old implementation
-
 from sqlalchemy import exc
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
