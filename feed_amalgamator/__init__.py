@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, redirect, url_for
 
-from . import auth, db, feed
+from . import auth, feed
 from feed_amalgamator.helpers.db_interface import dbi
 
 
@@ -27,8 +27,6 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    db.init_app(app)
-
     app.register_blueprint(auth.bp)
     app.register_blueprint(feed.bp)
 
@@ -36,8 +34,10 @@ def create_app(test_config=None):
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///{loc}".format(loc=os.path.join(app.instance_path, "flaskr.sqlite"))
     dbi.init_app(app)
 
+
     @app.route("/", methods=["GET"])
     def redirect_internal():
         return redirect(url_for("auth.register"))
-
+    with app.app_context():
+        dbi.create_all()
     return app

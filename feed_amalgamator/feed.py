@@ -23,7 +23,7 @@ Notes from discussion with Professor:
 bp = Blueprint("feed", __name__, url_prefix="/feed")
 
 # Setting up the loggers and interface layers
-CONFIG_FILE_LOC = Path("configuration/app_settings.ini")
+CONFIG_FILE_LOC = Path("configuration/app_settings.ini") # Path is hardcoded, needs to be changed
 parser = configparser.ConfigParser()
 parser.read(CONFIG_FILE_LOC)
 log_file_loc = Path(parser['LOG_SETTINGS']['feed_log_loc'])

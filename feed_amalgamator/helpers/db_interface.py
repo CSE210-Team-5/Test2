@@ -8,6 +8,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 class Base(DeclarativeBase):
     pass
 
+
 # dbi = db interface
 dbi = SQLAlchemy()  # Not initialized without the app
 
