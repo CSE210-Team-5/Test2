@@ -13,7 +13,10 @@ from urllib.parse import urlparse
 from http import HTTPStatus
 
 from mastodon import Mastodon, MastodonAPIError  # pip install Mastodon.py
-from feed_amalgamator.helpers.custom_exceptions import MastodonConnError, InvalidApiInputError
+from feed_amalgamator.helpers.custom_exceptions import (
+    MastodonConnError,
+    InvalidApiInputError,
+)
 
 # Add more logging levels (info etc. - forgot about this)
 # Segment https error types to become more descriptive
@@ -27,6 +30,7 @@ class MastodonOAuthInterface:
     code from third party libraries.
     API calls for data processing AFTER Oauth is under the responsibility of MastodonDataInterface
     """
+
     def __init__(self, config_file_loc: Path, logger: logging.Logger):
         parser = configparser.ConfigParser()
         parser.read(config_file_loc)
@@ -64,15 +68,23 @@ class MastodonOAuthInterface:
         try:
             response = requests.get(endpoint_to_test)
             if response.status_code == HTTPStatus.OK:
-                return True, json.loads(response.content)['domain']  # Obtain the cleansed content
+                return (
+                    True,
+                    json.loads(response.content)["domain"],
+                )  # Obtain the cleansed content
         except requests.exceptions.ConnectionError as e:
             # If the user domain is invalid, it is indistinguishable from a connection error (cannot resolve
             # the domain of the redirected url)
             # Increase granularity of http error logging (500?400?)
-            self.logger.error("ConnectionError {e} trying to verify user provided domain. User provided domain"
-                              "is either invalid, or there is a connection problem".format(e=e))
+            self.logger.error(
+                "ConnectionError {e} trying to verify user provided domain. User provided domain"
+                "is either invalid, or there is a connection problem".format(e=e)
+            )
 
-        return False, ""  # Failed. Could be due to connection errors or wrong domain provided
+        return (
+            False,
+            "",
+        )  # Failed. Could be due to connection errors or wrong domain provided
 
     def _clean_user_provided_domain(self, user_provided_domain: str) -> str:
         """
@@ -101,13 +113,19 @@ class MastodonOAuthInterface:
         @return: None, but there is a side effect of setting self.app_client
         """
         try:
-            client = Mastodon(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET,
-                              access_token=self.ACCESS_TOKEN, api_base_url=user_domain)
+            client = Mastodon(
+                client_id=self.CLIENT_ID,
+                client_secret=self.CLIENT_SECRET,
+                access_token=self.ACCESS_TOKEN,
+                api_base_url=user_domain,
+            )
             # Be careful: Wrong information used to start this client will not cause
             # the code to fail. Failure will only occur when the client is used later on
             self.app_client = client
         except (ConnectionError, MastodonAPIError) as err:
-            self.logger.error("Encountered {e} when trying to start app_client".format(e=err))
+            self.logger.error(
+                "Encountered {e} when trying to start app_client".format(e=err)
+            )
             raise MastodonConnError("API client failed to start")
 
     def generate_redirect_url(self, num_tries=3) -> str:
@@ -122,14 +140,20 @@ class MastodonOAuthInterface:
             try:
                 # It redirects the user to copy and paste an authorization code
                 # Note that it does NOT check if the url generated is valid
-                url = self.app_client.auth_request_url(redirect_uris=self.REDIRECT_URI, scopes=self.REQUIRED_SCOPES)
+                url = self.app_client.auth_request_url(
+                    redirect_uris=self.REDIRECT_URI, scopes=self.REQUIRED_SCOPES
+                )
                 return url
             except MastodonAPIError as err:
-                self.logger.error("Encountered MastodonAPIError {e} in generate_redirect url. Retrying."
-                                  "".format(e=err))
+                self.logger.error(
+                    "Encountered MastodonAPIError {e} in generate_redirect url. Retrying."
+                    "".format(e=err)
+                )
 
         # This following code will only run if the above code failed n times.
-        error_message = "Failed to generate url error after trying {n} times. Throwing error".format(n=num_tries)
+        error_message = "Failed to generate url error after trying {n} times. Throwing error".format(
+            n=num_tries
+        )
         self.logger.error(error_message)
         raise MastodonConnError(error_message)
 
@@ -145,20 +169,29 @@ class MastodonOAuthInterface:
 
         for i in range(num_tries):
             try:
-                users_access_token = self.app_client.log_in(code=user_auth_code,
-                                                            redirect_uri=self.REDIRECT_URI,
-                                                            scopes=self.REQUIRED_SCOPES)
+                users_access_token = self.app_client.log_in(
+                    code=user_auth_code,
+                    redirect_uri=self.REDIRECT_URI,
+                    scopes=self.REQUIRED_SCOPES,
+                )
                 return users_access_token
             except mastodon.errors.MastodonIllegalArgumentError as e:
-                illegal_arg_error_msg = "Encountered error {e} trying to generate user access token. User " \
-                                        "authorization code provided is likely invalid. Aborting".format(e=e)
+                illegal_arg_error_msg = (
+                    "Encountered error {e} trying to generate user access token. User "
+                    "authorization code provided is likely invalid. Aborting".format(
+                        e=e
+                    )
+                )
                 self.logger.error(illegal_arg_error_msg)
                 raise InvalidApiInputError(illegal_arg_error_msg)
             except (ConnectionError, MastodonAPIError) as err:
-                self.logger.error("Encountered {e} when trying to generate_user_access_token."
-                                  "Retrying".format(e=err))
+                self.logger.error(
+                    "Encountered {e} when trying to generate_user_access_token."
+                    "Retrying".format(e=err)
+                )
 
         error_message = "Failed to generate user access token after trying {n} times. Throwing error".format(
-            n=num_tries)
+            n=num_tries
+        )
         self.logger.error(error_message)
         raise MastodonConnError(error_message)

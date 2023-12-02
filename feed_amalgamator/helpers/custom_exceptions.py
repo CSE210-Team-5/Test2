@@ -7,6 +7,7 @@ class InvalidApiInputError(Exception):
     Custom exception class for errors encountered when communicating with the Mastodon API.
     In general, thrown if a provided input to the api (eg. a user token or a redirect uri) is invalid
     """
+
     def __init__(self, error_message: str):
         super().__init__(error_message)
 

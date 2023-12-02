@@ -1,33 +1,42 @@
-<!doctype html>
-<title>{% block title %}{% endblock %} - Feed Amalgamator</title>
+<!DOCTYPE html>
+<title>
+    {% block title %}{% endblock %}
+- Feed Amalgamator</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <nav>
-  <div class="navdiv">
-    <h1 class="logo">Feed Amalgamator</h1>
-    <ul>
-      {% if g.user %}
-      <li><a href="{{ url_for('auth.logout') }}">Log Out</a> </li>
-      <li><a href="{{ url_for('feed.feed_home') }}">Home</a></li>
-      <li>
-        <span class="username">
-          {{ g.user['username'] }}
-          <img class="profile-picture" src="{{ url_for('static', filename='mastodon_profile_default.png') }}"
-            alt="Profile Picture" />
-        </span>
-      </li>
-      {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Register</a> </li>
-      <li><a href="{{ url_for('auth.login') }}">Log In</a> </li>
-      {% endif %}
-    </ul>
-  </div>
+    <div class="navdiv">
+        <h1 class="logo">Feed Amalgamator</h1>
+        <ul>
+            {% if g.user %}
+                <li>
+                    <a href="{{ url_for("auth.logout") }}">Log Out</a>
+                </li>
+                <li>
+                    <a href="{{ url_for("feed.feed_home") }}">Home</a>
+                </li>
+                <li>
+                    <span class="username">
+                        {{ g.user['username'] }}
+                        <img class="profile-picture"
+                             src="{{ url_for('static', filename='mastodon_profile_default.png') }}"
+                             alt="Profile Picture" height="50" width="50" />
+                    </span>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{{ url_for("auth.register") }}">Register</a>
+                </li>
+                <li>
+                    <a href="{{ url_for("auth.login") }}">Log In</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
 </nav>
 <section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-  <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
+    <header>
+        {% block header %}{% endblock %}
+    </header>
+    {% for message in get_flashed_messages() %}<div class="flash">{{ message }}</div>{% endfor %}
+    {% block content %}{% endblock %}
 </section>
