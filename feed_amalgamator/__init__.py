@@ -31,9 +31,7 @@ def create_app(test_config=None):
     app.register_blueprint(feed.bp)
 
     # Hard coded db location atm, but we will need to refactor this entire init
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///{loc}".format(
-        loc=os.path.join(app.instance_path, "flaskr.sqlite")
-    )
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///{loc}".format(loc=os.path.join(app.instance_path, "flaskr.sqlite"))
     dbi.init_app(app)
 
     @app.route("/", methods=["GET"])
