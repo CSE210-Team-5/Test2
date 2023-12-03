@@ -33,6 +33,12 @@ a {
   overflow: hidden;
 }
 
+.status-visibility-icon {
+  order: 2;
+  color: #606984;
+  float: right;
+}
+
 .display-name-html {
   color: #fff;
 }

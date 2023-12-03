@@ -9,6 +9,23 @@
                 <article>
                     <div class="status">
                         <div class="status-info">
+                            <span class="status-visibility-icon">
+                                {% if post['visibility'] == 'public' %}
+                                    <i class="fa fa-globe" title="Public"></i>
+                                {% endif %}
+                                
+                                {% if post['visibility'] == 'unlisted' %}
+                                    <i class="fa fa-unlock" title="Unlisted"></i>
+                                {% endif %}
+
+                                {% if post['visibility'] == 'private' %}
+                                    <i class="fa fa-lock" title="Followers only"></i>
+                                {% endif %}
+
+                                {% if post['visibility'] == 'direct' %}
+                                    <i class="fa fa-at" title="Followers only"></i>
+                                {% endif %}
+                            </span>
                             <div class="status-avatar">
                                 <div class="account-avatar">
                                     <img src="{{ post['account']['avatar'] }}" alt="avatar" height="50" width="50">
@@ -20,7 +37,7 @@
                                 </bdi>
                                 <span class="display-name-account">{{ post['account']['acct'] }}</span>
                             </span>
-                        </div>
+                            </div>
                         <div class="status-content">{{ post['content']|safe }}</div>
                     </div>
                 </article>
