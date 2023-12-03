@@ -11,6 +11,7 @@ from feed_amalgamator.helpers.logging_helper import LoggingHelper
 from feed_amalgamator.helpers.mastodon_data_interface import MastodonDataInterface
 from feed_amalgamator.helpers.mastodon_oauth_interface import MastodonOAuthInterface
 from feed_amalgamator.helpers.db_interface import dbi, UserServer
+from . import CONFIG
 
 """
 Notes from discussion with Professor:
@@ -22,7 +23,7 @@ bp = Blueprint("feed", __name__, url_prefix="/feed")
 
 # Setting up the loggers and interface layers
 CONFIG_FILE_LOC = Path(
-    "configuration/app_settings.ini"
+    CONFIG.path
 )  # Path is hardcoded, needs to be changed
 parser = configparser.ConfigParser()
 parser.read(CONFIG_FILE_LOC)
@@ -36,11 +37,21 @@ data_api = MastodonDataInterface(logger)
 # TODO - Business logic of home feed (deciding what to filter etc.)
 
 # Defining constants
-POSTS_PER_TIMELINE = 20  # Better in a configuration file? Or hard code?
-HOME_TIMELINE_NAME = "home"
-USER_DOMAIN_FIELD = "domain"
-LOGIN_TOKEN_FIELD = "token"
-USER_ID_FIELD = "user_id"
+POSTS_PER_TIMELINE = CONFIG.posts  # Better in a configuration file? Or hard code?
+HOME_TIMELINE_NAME = CONFIG.home_timeline
+USER_DOMAIN_FIELD = CONFIG.user_domain
+LOGIN_TOKEN_FIELD = CONFIG.login_token
+USER_ID_FIELD = CONFIG.user_id
+
+def filter_sort_feed(timelines):
+    """
+    Function that sorts and fiters the timeline
+    """
+    for post in timelines:
+        for delete in CONFIG.filter_list:
+            post.pop(delete)
+
+    return sorted(timelines, key=lambda x: x[CONFIG.sort_by], reverse=True)
 
 
 @bp.route("/home", methods=["GET"])
@@ -78,8 +89,9 @@ def feed_home():
                 timeline = data_api.get_timeline_data(
                     HOME_TIMELINE_NAME, POSTS_PER_TIMELINE
                 )
-                timelines.append(timeline)
-                return render_template("feed/home.html", timelines=timelines)
+                timelines.extend(timeline)
+            timelines = filter_sort_feed(timelines)
+            return render_template("feed/home.html", timelines=timelines)
 
     return render_template("feed/home.html", timelines=None)  # Default return
 
