@@ -4,8 +4,7 @@
         <a href="{{ url_for("feed.add_server") }}">Add Server</a>
     </p>
     {% if timelines is not none %}
-        {% for timeline in timelines %}
-            {% for post in timeline %}
+            {% for post in timelines %}
                 <article>
                     {% if post['reblog'] != None %}
                         <span class="status-prepend">
@@ -51,6 +50,5 @@
                     </div>
                 </article>
             {% endfor %}
-        {% endfor %}
     {% endif %}
 {% endblock %}
