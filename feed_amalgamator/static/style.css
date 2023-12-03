@@ -33,7 +33,7 @@ a {
   overflow: hidden;
 }
 
-.status-visibility-icon {
+.detailed-status-meta {
   order: 2;
   color: #606984;
   float: right;
