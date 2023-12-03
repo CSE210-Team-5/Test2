@@ -22,9 +22,7 @@ Notes from discussion with Professor:
 bp = Blueprint("feed", __name__, url_prefix="/feed")
 
 # Setting up the loggers and interface layers
-CONFIG_FILE_LOC = Path(
-    CONFIG.path
-)  # Path is hardcoded, needs to be changed
+CONFIG_FILE_LOC = Path(CONFIG.path)  # Path is hardcoded, needs to be changed
 parser = configparser.ConfigParser()
 parser.read(CONFIG_FILE_LOC)
 log_file_loc = Path(parser["LOG_SETTINGS"]["feed_log_loc"])
@@ -43,6 +41,7 @@ USER_DOMAIN_FIELD = CONFIG.user_domain
 LOGIN_TOKEN_FIELD = CONFIG.login_token
 USER_ID_FIELD = CONFIG.user_id
 
+
 def filter_sort_feed(timelines):
     """
     Function that sorts and fiters the timeline
@@ -58,23 +57,13 @@ def filter_sort_feed(timelines):
 def feed_home():
     if request.method == "GET":
         provided_user_id = session[USER_ID_FIELD]
-        user_servers = dbi.session.execute(
-            dbi.select(UserServer).filter_by(user_id=provided_user_id)
-        ).all()
+        user_servers = dbi.session.execute(dbi.select(UserServer).filter_by(user_id=provided_user_id)).all()
         if user_servers is None:
             flash("Invalid User")  # issue with hard coded error messages - see below
-            logger.error(
-                "No user servers found that are tied to user id {i}".format(
-                    i=provided_user_id
-                )
-            )
+            logger.error("No user servers found that are tied to user id {i}".format(i=provided_user_id))
             raise Exception  # TODO: We need to standardize how exceptions are raised and parsed in flask.
         else:
-            logger.info(
-                "Found {n} servers tied to user id {i}".format(
-                    n=len(user_servers), i=provided_user_id
-                )
-            )
+            logger.info("Found {n} servers tied to user id {i}".format(n=len(user_servers), i=provided_user_id))
             timelines = []
             for user_server_tuple in user_servers:
                 # user_servers is a list of tuples. The object is the first element of the tuple
@@ -82,13 +71,9 @@ def feed_home():
                 # These are user_server objects defined in the data interface. Treat them like python objects
                 server_domain = user_server.server
                 access_token = user_server.token
-                data_api.start_user_api_client(
-                    user_domain=server_domain, user_access_token=access_token
-                )
+                data_api.start_user_api_client(user_domain=server_domain, user_access_token=access_token)
                 # TODO: This will need to be processed (filtered, sorted etc.) by a helper class
-                timeline = data_api.get_timeline_data(
-                    HOME_TIMELINE_NAME, POSTS_PER_TIMELINE
-                )
+                timeline = data_api.get_timeline_data(HOME_TIMELINE_NAME, POSTS_PER_TIMELINE)
                 timelines.extend(timeline)
             timelines = filter_sort_feed(timelines)
             return render_template("feed/home.html", timelines=timelines)
@@ -118,8 +103,9 @@ def render_redirect_url_page():
     is_valid_domain, parsed_domain = auth_api.verify_user_provided_domain(domain)
     if not is_valid_domain:
         logger.error(
-            "User inputted domain {d} was not a valid mastodon domain. "
-            "Failed to render redirect url page".format(d=domain)
+            "User inputted domain {d} was not a valid mastodon domain. " "Failed to render redirect url page".format(
+                d=domain
+            )
         )
         raise Exception  # TODO: We will need to standardize how to handle exceptions in the flask context.
 
@@ -143,15 +129,11 @@ def render_input_auth_code_page():
             # Once the auth_token is used, it cannot be reused. We need to save the actual login token
             access_token = auth_api.generate_user_access_token(auth_token)
 
-            user_server_obj = UserServer(
-                user_id=user_id, server=domain, token=access_token
-            )
+            user_server_obj = UserServer(user_id=user_id, server=domain, token=access_token)
             dbi.session.add(user_server_obj)
             dbi.session.commit()
         except exc.IntegrityError:
-            error = (
-                "Record already exists."
-            )  # Hardcore error messages, or abstract further?
+            error = "Record already exists."  # Hardcore error messages, or abstract further?
         except MastodonConnError:
             error = "Error: Could not generate valid login token"
         else:
