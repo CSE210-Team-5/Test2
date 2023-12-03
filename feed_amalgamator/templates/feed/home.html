@@ -9,17 +9,6 @@
                 <article>
                     <div class="status">
                         <div class="status-info">
-                            <div class="detailed-status-meta">
-                                <span class="status-visibility-icon">
-                                    {% if post['visibility'] == 'public' %}<i class="fa fa-globe" title="Public"></i>{% endif %}
-                                    {% if post['visibility'] == 'unlisted' %}<i class="fa fa-unlock" title="Unlisted"></i>{% endif %}
-                                    {% if post['visibility'] == 'private' %}<i class="fa fa-lock" title="Followers only"></i>{% endif %}
-                                    {% if post['visibility'] == 'direct' %}<i class="fa fa-at" title="Followers only"></i>{% endif %}
-                                </span>
-                                ·
-                                <i class="fa fa-retweet"></i>
-                                <span class="detailed-status-reblogs">{{ post['reblogs_count'] }}</span>
-                            </div>
                             <div class="status-avatar">
                                 <div class="account-avatar">
                                     <img src="{{ post['account']['avatar'] }}"
@@ -34,6 +23,22 @@
                                 </bdi>
                                 <span class="display-name-account">{{ post['account']['acct'] }}</span>
                             </span>
+                        </div>
+                        <div class="detailed-status-meta">
+                            <span class="detailed-status-datetime">{{ post['created_at'].strftime("%b %d, %Y, %I:%M") }}</span>
+                            ·
+                            <span class="status-visibility-icon">
+                                {% if post['visibility'] == 'public' %}<i class="fa fa-globe" title="Public"></i>{% endif %}
+                                {% if post['visibility'] == 'unlisted' %}<i class="fa fa-unlock" title="Unlisted"></i>{% endif %}
+                                {% if post['visibility'] == 'private' %}<i class="fa fa-lock" title="Followers only"></i>{% endif %}
+                                {% if post['visibility'] == 'direct' %}<i class="fa fa-at" title="Followers only"></i>{% endif %}
+                            </span>
+                            ·
+                            <i class="fa fa-retweet"></i>
+                            <span class="detailed-status-reblogs">{{ post['reblogs_count'] }}</span>
+                            ·
+                            <i class="fa fa-star"></i>
+                            <span class="detailed-status-favourites">{{ post['favourites_count'] }}</span>
                         </div>
                         <div class="status-content">{{ post['content']|safe }}</div>
                     </div>

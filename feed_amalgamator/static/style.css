@@ -34,9 +34,8 @@ a {
 }
 
 .detailed-status-meta {
-  order: 2;
+  padding-top: 8px;
   color: #606984;
-  float: right;
 }
 
 .display-name-html {
