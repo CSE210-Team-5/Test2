@@ -7,6 +7,13 @@
         {% for timeline in timelines %}
             {% for post in timeline %}
                 <article>
+                    {% if post['reblog'] != None %}
+                        <span class="status-prepend">
+                            <i class="fa fa-retweet"></i>
+                            <strong>{{ post['account']['display_name'] }} boosted</strong>
+                        </span>
+                        {% set post = post['reblog'] %}
+                    {% endif %}
                     <div class="status">
                         <div class="status-info">
                             <div class="status-avatar">
