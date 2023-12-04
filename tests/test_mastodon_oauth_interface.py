@@ -10,9 +10,10 @@ from feed_amalgamator.helpers.mastodon_oauth_interface import MastodonOAuthInter
 
 class TestOauthInterface(unittest.TestCase):
     def setUp(self) -> None:
-        test_config_loc = "test_config/test_mastodon_client_info.ini"
+        test_config_loc = Path("configuration/test_mastodon_client_info.ini")
         parser = configparser.ConfigParser()
         parser.read(test_config_loc)
+        print(parser.sections())
         test_log_root = parser["TEST_SETTINGS"]["test_log_root"]
 
         logger_name = "oauth_interface_test"
@@ -39,14 +40,14 @@ class TestOauthInterface(unittest.TestCase):
 
     def test_generate_user_token(self):
         # No client has been started yet, AssertionError should be thrown
-        self.assertRaises(AssertionError, self.client.generate_user_access_token("undefined"))
+        self.assertRaises(AssertionError, self.client.generate_user_access_token,"undefined")
 
         self.client.start_app_api_client(self.client_domain)  # Sets self.api_client
 
         wrong_auth_code = "Sousou no Frieren"
         self.assertRaises(
             InvalidApiInputError,
-            self.client.generate_user_access_token(wrong_auth_code),
+            self.client.generate_user_access_token,wrong_auth_code
         )
 
         # Testing a CORRECT auth code cannot be done automatically as it requires
