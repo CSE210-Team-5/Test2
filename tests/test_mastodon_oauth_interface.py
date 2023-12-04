@@ -22,7 +22,7 @@ class TestOauthInterface(unittest.TestCase):
         self.logger = logger
         self.client = MastodonOAuthInterface(test_config_loc, logger)
         self.client_domain = parser["APP_TOKENS"]["client_domain"]  # Required to be passed in as a parameter
-        self.user_auth_code = parser["APP_TOKENS"]["user_auth_code"]
+        #self.user_auth_code = parser["APP_TOKENS"]["user_auth_code"]
 
     def test_verify_user_provided_domain(self):
         with_https = "https://mastodon.social"
