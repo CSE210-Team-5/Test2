@@ -136,7 +136,9 @@ class MastodonOAuthInterface:
                 url = self.app_client.auth_request_url(redirect_uris=self.REDIRECT_URI, scopes=self.REQUIRED_SCOPES)
                 return url
             except MastodonAPIError as err:
+
                 self.logger.error("Encountered MastodonAPIError {e} in generate_redirect url. Retrying." "".format(e=err))
+
 
         # This following code will only run if the above code failed n times.
         error_message = "Failed to generate url error after trying {n} times. Throwing error".format(n=num_tries)

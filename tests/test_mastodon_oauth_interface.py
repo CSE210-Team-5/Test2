@@ -13,6 +13,7 @@ class TestOauthInterface(unittest.TestCase):
         test_config_loc = Path("configuration/test_mastodon_client_info.ini")
         parser = configparser.ConfigParser()
         parser.read(test_config_loc)
+        print(parser.sections())
         test_log_root = parser["TEST_SETTINGS"]["test_log_root"]
 
         logger_name = "oauth_interface_test"
@@ -24,6 +25,7 @@ class TestOauthInterface(unittest.TestCase):
         self.client_id = parser["APP_TOKENS"]["CLIENT_ID"]  # Required to be passed in as a parameter
         self.client_secret = parser["APP_TOKENS"]["CLIENT_SECRET"]  # Required to be passed in as a parameter
         self.access_token = parser["APP_TOKENS"]["ACCESS_TOKEN"]  # Required to be passed in as a parameter
+
 
     def test_verify_user_provided_domain(self):
         with_https = "https://mastodon.social"
@@ -37,11 +39,13 @@ class TestOauthInterface(unittest.TestCase):
         )
 
         mangled_domain = "mastodop.social"
+
         self.assertEqual(self.client.verify_user_provided_domain(mangled_domain)[0], False)
 
     def test_generate_user_token(self):
         # No client has been started yet, AssertionError should be thrown
         self.assertRaises(AssertionError, self.client.generate_user_access_token, "undefined")
+
 
         self.client.start_app_api_client(
             self.client_domain, self.client_id, self.client_secret, self.access_token
