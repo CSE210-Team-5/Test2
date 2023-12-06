@@ -29,7 +29,7 @@ class MastodonDataInterface:
         """Hard coded required scopes for the app to work"""
         self.REQUIRED_SCOPES = ["read", "write", "push"]
         """The redirect URI required by the API to generate certain urls"""
-        self.REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
+        self.REDIRECT_URI = "http://127.0.0.1:5000/feed/handle_oauth"
 
     def start_user_api_client(self, user_domain: str, user_access_token: str):
         """
