@@ -40,7 +40,7 @@ class MastodonOAuthInterface:
         """Hard coded required scopes for the app to work. Revisit if the scope changes"""
         self.REQUIRED_SCOPES = ["read", "write", "push"]
         """The redirect URI required by the API to generate certain urls"""
-        self.REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
+        self.REDIRECT_URI = "http://127.0.0.1:5000/feed/handle_oauth"
 
     # ===== Functions to handle the authorization pipeline with the user =====
     def verify_user_provided_domain(self, user_domain: str) -> (bool, str):
@@ -196,10 +196,10 @@ class MastodonOAuthInterface:
         api_url = "https://" + domain_name + "/api/v1/apps"
         token_url = "https://" + domain_name + "/oauth/token"
         payload = {
-            "client_name": "Test Application",
-            "redirect_uris": "urn:ietf:wg:oauth:2.0:oob",
+            "client_name": "Feed Amalgamator",
+            "redirect_uris": "http://127.0.0.1:5000/feed/handle_oauth",
             "scopes": "read write push",
-            "website": "https://myapp.example",
+            "website": "http://127.0.0.1:5000",
         }
         try:
             headers = {
@@ -214,7 +214,7 @@ class MastodonOAuthInterface:
             payload_token = {
                 "client_id": client_id,
                 "client_secret": client_secret,
-                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
+                "redirect_uri": "http://127.0.0.1:5000/feed/handle_oauth",
                 "grant_type": "client_credentials",
             }
             response = requests.post(token_url, data=payload_token, headers=headers)

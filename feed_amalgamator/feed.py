@@ -173,3 +173,9 @@ def generate_auth_code_error_message(
     elif not user_domain:
         error = "Domain is required"
     return error
+
+@bp.route("/handle_oauth", methods=["GET"])
+def handle_outh():
+    """Endpoint for the user to add a server to their existing list"""
+    print(request.args.get('code'))
+    return redirect("/feed/add_server")
