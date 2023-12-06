@@ -13,7 +13,6 @@ class TestOauthInterface(unittest.TestCase):
         test_config_loc = Path("configuration/test_mastodon_client_info.ini")
         parser = configparser.ConfigParser()
         parser.read(test_config_loc)
-        print(parser.sections())
         test_log_root = parser["TEST_SETTINGS"]["test_log_root"]
 
         logger_name = "oauth_interface_test"
