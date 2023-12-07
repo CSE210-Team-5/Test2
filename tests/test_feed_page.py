@@ -3,8 +3,6 @@ import unittest
 from pathlib import Path
 
 from feed_amalgamator import create_app
-from feed_amalgamator.feed import USER_DOMAIN_FIELD
-from feed_amalgamator.helpers.db_interface import ApplicationTokens
 
 
 class TestFeedPage(unittest.TestCase):
