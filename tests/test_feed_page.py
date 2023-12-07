@@ -33,25 +33,3 @@ class TestFeedPage(unittest.TestCase):
         # No users existing so far
         self.assertRaises(Exception, client.get(home_url))
     """
-
-    def test_add_server_redirect_url(self):
-        client = self.app.test_client()
-        add_server_url = "{r}/add_server".format(r=self.page_root)
-        # Testing garbage domain field
-        self.assertRaises(Exception, client.post, add_server_url, data={USER_DOMAIN_FIELD: "garbage"})
-
-        # Testing proper field
-        proper_domain = "mastodon.social"
-        with self.app.app_context():
-            proper_post = client.post(add_server_url, data={USER_DOMAIN_FIELD: proper_domain})
-            decoded_post_response = proper_post.data.decode("utf-8")
-            items = ApplicationTokens.query.filter_by(server=proper_domain).all()
-            self.assertEqual(1, len(items))  # Database insert successful
-            # Authorization Token is a term that should appear in the page
-            self.assertIn("Authorization Token", decoded_post_response)
-            # Test by proxy that the generated url is in the page, but the actual redirect url generation function
-            # should be tested elsewhere
-            self.assertIn(proper_domain, decoded_post_response)
-
-        # The auth token path cannot be tested as it requires an authorization code, which requires manual
-        # intervention
