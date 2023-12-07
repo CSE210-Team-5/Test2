@@ -174,4 +174,5 @@ def generate_auth_code_error_message(
 def handle_outh():
     """Endpoint for the user to add a server to their existing list"""
     render_input_auth_code_page(request.args.get('code'))
+    flash('Server added Successfully!!')
     return redirect("/feed/add_server")
