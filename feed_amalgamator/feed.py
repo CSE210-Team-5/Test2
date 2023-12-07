@@ -83,8 +83,6 @@ def add_server():
     if request.method == "POST":
         if USER_DOMAIN_FIELD in request.form:
             return render_redirect_url_page()
-        elif LOGIN_TOKEN_FIELD in request.form:
-            return render_input_auth_code_page()
     return render_template("feed/add_server.html", is_domain_set=False)
 
 
