@@ -20,8 +20,9 @@ parser = configparser.ConfigParser()
 with open(CONFIG.path) as file:
     parser.read_file(file)
 log_file_loc = Path(parser["LOG_SETTINGS"]["feed_log_loc"])
+redirect_uri = Path(parser["REDIRECT_URI"]["REDIRECT_URI"])
 logger = LoggingHelper.generate_logger(logging.INFO, log_file_loc, "feed_page")
-auth_api = MastodonOAuthInterface(logger)
+auth_api = MastodonOAuthInterface(logger, redirect_uri)
 data_api = MastodonDataInterface(logger)
 
 # TODO - Add Swagger/OpenAPI documentation

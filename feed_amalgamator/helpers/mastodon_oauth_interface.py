@@ -29,7 +29,7 @@ class MastodonOAuthInterface:
     API calls for data processing AFTER Oauth is under the responsibility of MastodonDataInterface
     """
 
-    def __init__(self, logger: logging.Logger):
+    def __init__(self, logger: logging.Logger, redirect_uri):
         """We pass in a logger instead of creating a new one
         As we want logs to be logged to the program calling the interface
         rather than have separate logs for the interface layer specifically"""
@@ -39,7 +39,7 @@ class MastodonOAuthInterface:
         """Hard coded required scopes for the app to work. Revisit if the scope changes"""
         self.REQUIRED_SCOPES = ["read", "write", "push"]
         """The redirect URI required by the API to generate certain urls"""
-        self.REDIRECT_URI = "http://127.0.0.1:5000/feed/handle_oauth"
+        self.REDIRECT_URI = redirect_uri
 
     # ===== Functions to handle the authorization pipeline with the user =====
     def verify_user_provided_domain(self, user_domain: str) -> (bool, str):
@@ -201,7 +201,7 @@ class MastodonOAuthInterface:
         # TODO: Will need to refactor the code below into several functions
         payload = {
             "client_name": "Feed Amalgamator",
-            "redirect_uris": "http://127.0.0.1:5000/feed/handle_oauth",
+            "redirect_uris": self.REDIRECT_URI,
             "scopes": "read write push",
             "website": "http://127.0.0.1:5000",
         }
@@ -215,7 +215,7 @@ class MastodonOAuthInterface:
             payload_token = {
                 "client_id": client_id,
                 "client_secret": client_secret,
-                "redirect_uri": "http://127.0.0.1:5000/feed/handle_oauth",
+                "redirect_uri": self.REDIRECT_URI,
                 "grant_type": "client_credentials",
             }
             response = requests.post(token_url, data=payload_token, headers=headers)
