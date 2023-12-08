@@ -57,7 +57,7 @@ class MastodonOAuthInterface:
             headers = self._generate_headers_for_api_call()
             response = requests.get(endpoint_to_test, headers=headers)
             if response.status_code == HTTPStatus.OK:
-                wanted_domain = json.loads(response.content)['domain']
+                wanted_domain = json.loads(response.content)["domain"]
                 return True, wanted_domain  # Obtain the cleansed content
         except requests.exceptions.ConnectionError as e:
             # If the user domain is invalid, it is indistinguishable from a connection error (cannot resolve
@@ -68,9 +68,11 @@ class MastodonOAuthInterface:
                 "is either invalid, or there is a connection problem".format(e=e)
             )
         except json.JSONDecodeError:
-            self.logger.error("JsonDecodeError {e}: Response obtained from server while verifying domain was "
-                              "successful, but returned a value that cannot be parsed. Server is likely to "
-                              "not be a legitimate server")
+            self.logger.error(
+                "JsonDecodeError {e}: Response obtained from server while verifying domain was "
+                "successful, but returned a value that cannot be parsed. Server is likely to "
+                "not be a legitimate server"
+            )
         return False, ""  # Failed. Could be due to connection errors or wrong domain provided
 
     def _generate_headers_for_api_call(self):
@@ -98,7 +100,9 @@ class MastodonOAuthInterface:
             wanted_domain = parsed_input.path
         return wanted_domain
 
-    def start_app_api_client(self, user_domain: str,  client_id: str, client_secret: str, access_token: str):
+    def start_app_api_client(
+        self, user_domain: str, client_id: str, client_secret: str, access_token: str
+    ):
         """
         Function to start the app client (client used by our app to authenticate users).
         This generated app client will be used to process user authorization requests
@@ -134,15 +138,22 @@ class MastodonOAuthInterface:
             try:
                 # It redirects the user to copy and paste an authorization code
                 # Note that it does NOT check if the url generated is valid
-                url = self.app_client.auth_request_url(redirect_uris=self.REDIRECT_URI, scopes=self.REQUIRED_SCOPES)
+                url = self.app_client.auth_request_url(
+                    redirect_uris=self.REDIRECT_URI, scopes=self.REQUIRED_SCOPES
+                )
                 return url
             except MastodonAPIError as err:
                 self.logger.error(
-                    "Encountered MastodonAPIError {e} in generate_redirect url. Retrying." "".format(e=err)
+                    "Encountered MastodonAPIError {e} in generate_redirect url. Retrying."
+                    "".format(e=err)
                 )
 
         # This following code will only run if the above code failed n times.
-        error_message = "Failed to generate url error after trying {n} times. Throwing error".format(n=num_tries)
+        error_message = (
+            "Failed to generate url error after trying {n} times. Throwing error".format(
+                n=num_tries
+            )
+        )
         self.logger.error(error_message)
         raise MastodonConnError(error_message)
 
@@ -172,10 +183,16 @@ class MastodonOAuthInterface:
                 self.logger.error(illegal_arg_error_msg)
                 raise InvalidApiInputError(illegal_arg_error_msg)
             except (ConnectionError, MastodonAPIError) as err:
-                self.logger.error("Encountered {e} when trying to generate_user_access_token." "Retrying".format(e=err))
+                self.logger.error(
+                    "Encountered {e} when trying to generate_user_access_token." "Retrying".format(
+                        e=err
+                    )
+                )
 
-        error_message = "Failed to generate user access token after trying {n} times. Throwing error".format(
-            n=num_tries
+        error_message = (
+            "Failed to generate user access token after trying {n} times. Throwing error".format(
+                n=num_tries
+            )
         )
         self.logger.error(error_message)
         raise MastodonConnError(error_message)
@@ -200,30 +217,34 @@ class MastodonOAuthInterface:
         token_url = "https://" + domain_name + "/oauth/token"
         # TODO: Will need to refactor the code below into several functions
         payload = {
-            'client_name': 'Test Application',
-            'redirect_uris': 'urn:ietf:wg:oauth:2.0:oob',
-            'scopes': 'read write push',
-            'website': 'https://myapp.example'
+            "client_name": "Test Application",
+            "redirect_uris": "urn:ietf:wg:oauth:2.0:oob",
+            "scopes": "read write push",
+            "website": "https://myapp.example",
         }
         try:
             headers = self._generate_headers_for_api_call()
             response = requests.post(api_url, data=payload, headers=headers)
             response.raise_for_status()  # Raises an HTTPError if the HTTP request returned an unsuccessful status code
             response_dict = json.loads(response.text)
-            client_id = response_dict['client_id']
-            client_secret = response_dict['client_secret']
+            client_id = response_dict["client_id"]
+            client_secret = response_dict["client_secret"]
             payload_token = {
-                'client_id': client_id,
-                'client_secret': client_secret,
-                'redirect_uri': 'urn:ietf:wg:oauth:2.0:oob',
-                'grant_type': 'client_credentials'
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
+                "grant_type": "client_credentials",
             }
             response = requests.post(token_url, data=payload_token, headers=headers)
             response.raise_for_status()  # Raises an HTTPError if the HTTP request returned an unsuccessful status code
             response_dict_token = json.loads(response.text)
-            access_token = response_dict_token['access_token']
-            app_token = ApplicationTokens(server=domain_name, client_id=client_id, client_secret=client_secret,
-                                          access_token=access_token)
+            access_token = response_dict_token["access_token"]
+            app_token = ApplicationTokens(
+                server=domain_name,
+                client_id=client_id,
+                client_secret=client_secret,
+                access_token=access_token,
+            )
             dbi.session.add(app_token)
             dbi.session.commit()
             return client_id, client_secret, access_token

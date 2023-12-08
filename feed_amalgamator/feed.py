@@ -53,13 +53,21 @@ def filter_sort_feed(timelines: list[dict]) -> list[dict]:
 def feed_home():
     if request.method == "GET":
         provided_user_id = session[USER_ID_FIELD]
-        user_servers = dbi.session.execute(dbi.select(UserServer).filter_by(user_id=provided_user_id)).all()
+        user_servers = dbi.session.execute(
+            dbi.select(UserServer).filter_by(user_id=provided_user_id)
+        ).all()
         if user_servers is None:
             flash("Invalid User")  # issue with hard coded error messages - see below
-            logger.error("No user servers found that are tied to user id {i}".format(i=provided_user_id))
+            logger.error(
+                "No user servers found that are tied to user id {i}".format(i=provided_user_id)
+            )
             raise Exception  # TODO: We need to standardize how exceptions are raised and parsed in flask.
         else:
-            logger.info("Found {n} servers tied to user id {i}".format(n=len(user_servers), i=provided_user_id))
+            logger.info(
+                "Found {n} servers tied to user id {i}".format(
+                    n=len(user_servers), i=provided_user_id
+                )
+            )
             timelines = []
             for user_server_tuple in user_servers:
                 # user_servers is a list of tuples. The object is the first element of the tuple
@@ -67,7 +75,9 @@ def feed_home():
                 # These are user_server objects defined in the data interface. Treat them like python objects
                 server_domain = user_server.server
                 access_token = user_server.token
-                data_api.start_user_api_client(user_domain=server_domain, user_access_token=access_token)
+                data_api.start_user_api_client(
+                    user_domain=server_domain, user_access_token=access_token
+                )
 
                 timeline = data_api.get_timeline_data(HOME_TIMELINE_NAME, POSTS_PER_TIMELINE)
                 timelines.extend(timeline)
@@ -99,8 +109,10 @@ def render_redirect_url_page():
     is_valid_domain, parsed_domain = auth_api.verify_user_provided_domain(domain)
 
     if not is_valid_domain:
-        logger.error("User inputted domain {d} was not a valid mastodon domain." 
-                     "Failed to render redirect url page".format(d=domain))
+        logger.error(
+            "User inputted domain {d} was not a valid mastodon domain."
+            "Failed to render redirect url page".format(d=domain)
+        )
         raise Exception  # TODO: We will need to standardize how to handle exceptions in the flask context.
 
     app_token_obj = auth_api.check_if_domain_exists_in_database(parsed_domain)
@@ -111,8 +123,10 @@ def render_redirect_url_page():
     else:
         client_id, client_secret, access_token = auth_api.add_domain_to_database(parsed_domain)
         if client_id is None:
-            logger.error("Domain {d} did not return a proper API response when adding it"
-                         "to the database".format(d=domain))
+            logger.error(
+                "Domain {d} did not return a proper API response when adding it"
+                "to the database".format(d=domain)
+            )
             return render_template("feed/add_server.html", is_domain_set=False, error=True)
         logger.info("New domain added to the database")
 

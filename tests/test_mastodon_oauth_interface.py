@@ -33,7 +33,9 @@ class TestOauthInterface(unittest.TestCase):
 
         wanted_result = "mastodon.social"
         self.assertEqual((True, wanted_result), self.client.verify_user_provided_domain(with_https))
-        self.assertEqual((True, wanted_result), self.client.verify_user_provided_domain(without_https))
+        self.assertEqual(
+            (True, wanted_result), self.client.verify_user_provided_domain(without_https)
+        )
 
         mangled_domain = "mastodo.social"
         self.assertEqual(self.client.verify_user_provided_domain(mangled_domain)[0], False)
@@ -42,13 +44,15 @@ class TestOauthInterface(unittest.TestCase):
         # No client has been started yet, AssertionError should be thrown
         self.assertRaises(AssertionError, self.client.generate_user_access_token, "undefined")
 
-        self.client.start_app_api_client(self.client_domain, self.client_id,
-                                         self.client_secret, self.access_token)  # Sets self.api_client
+        self.client.start_app_api_client(
+            self.client_domain, self.client_id, self.client_secret, self.access_token
+        )  # Sets self.api_client
 
         wrong_auth_code = "Sousou no Frieren"
 
-        self.assertRaises(InvalidApiInputError, self.client.generate_user_access_token,
-                          wrong_auth_code)
+        self.assertRaises(
+            InvalidApiInputError, self.client.generate_user_access_token, wrong_auth_code
+        )
 
         # Testing a CORRECT auth code cannot be done automatically as it requires
         # a manual redirect to a page where a user has to log in. As such, we only test the wrong situation
