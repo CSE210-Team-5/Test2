@@ -35,3 +35,4 @@ ruff.toml
 package-lock.json
 node_modules
 .stylelintrc.json
+.eslintrc.js

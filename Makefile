@@ -5,6 +5,7 @@ lint:
 	ruff format .
 	npx stylelint "**/*.css"
 	yamllint -c ./configuration/.yamllint ./.github/workflows/
+	npx eslint .
 
 test:
 	pdm run python -m coverage run -m unittest discover tests
