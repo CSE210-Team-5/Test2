@@ -38,6 +38,8 @@ class MastodonOAuthInterface:
         self.app_client = None
         """Hard coded required scopes for the app to work. Revisit if the scope changes"""
         self.REQUIRED_SCOPES = ["read", "write", "push"]
+        """The redirect URI required by the API to generate certain urls"""
+        self.REDIRECT_URI = "http://127.0.0.1:5000/feed/handle_oauth"
 
     # ===== Functions to handle the authorization pipeline with the user =====
     def verify_user_provided_domain(self, user_domain: str) -> (bool, str):
@@ -120,15 +122,13 @@ class MastodonOAuthInterface:
             self.logger.error("Encountered {e} when trying to start app_client".format(e=err))
             raise MastodonConnError("API client failed to start")
 
-    def generate_redirect_url(self, base_url, num_tries=3) -> str:
+    def generate_redirect_url(self, num_tries=3) -> str:
         """
         Generates an url that the user will be redirected to in order to complete Mastodon's Oauth procedure
         @param: num_tries: Number of tries to generate a redirect url before giving up. Default value of 3
         @return: The redirect url as a string or None (upon connection failure)
         """
         assert self.app_client is not None, "App client has not been initialized"
-        print("BASE URL : ", base_url)
-        self.REDIRECT_URI = base_url + "/handle_oauth"
 
         for i in range(num_tries):
             try:
@@ -191,20 +191,19 @@ class MastodonOAuthInterface:
         else:
             return domain
 
-    def add_domain_to_database(self, domain_name, base_url):
+    def add_domain_to_database(self, domain_name):
         """
         Add new domain to database. Fetch client id, client secret and access token and store it in database
         @param domain_name: Add domain_name to database, with its client id, client secret and access token
         """
         api_url = "https://" + domain_name + "/api/v1/apps"
         token_url = "https://" + domain_name + "/oauth/token"
-        self.REDIRECT_URI = base_url + "/handle_oauth"
         # TODO: Will need to refactor the code below into several functions
         payload = {
             "client_name": "Feed Amalgamator",
-            "redirect_uris": self.REDIRECT_URI,
+            "redirect_uris": "http://127.0.0.1:5000/feed/handle_oauth",
             "scopes": "read write push",
-            "website": self.REDIRECT_URI,
+            "website": "http://127.0.0.1:5000",
         }
         try:
             headers = self._generate_headers_for_api_call()
@@ -216,7 +215,7 @@ class MastodonOAuthInterface:
             payload_token = {
                 "client_id": client_id,
                 "client_secret": client_secret,
-                "redirect_uri": self.REDIRECT_URI,
+                "redirect_uri": "http://127.0.0.1:5000/feed/handle_oauth",
                 "grant_type": "client_credentials",
             }
             response = requests.post(token_url, data=payload_token, headers=headers)
@@ -224,7 +223,7 @@ class MastodonOAuthInterface:
             response_dict_token = json.loads(response.text)
             access_token = response_dict_token['access_token']
             app_token = ApplicationTokens(server=domain_name, client_id=client_id, client_secret=client_secret,
-                                          access_token=access_token, redirect_uri=self.REDIRECT_URI)
+                                          access_token=access_token)
             dbi.session.add(app_token)
             dbi.session.commit()
             return client_id, client_secret, access_token

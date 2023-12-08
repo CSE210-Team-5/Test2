@@ -81,11 +81,11 @@ def add_server():
     """Endpoint for the user to add a server to their existing list"""
     if request.method == "POST":
         if USER_DOMAIN_FIELD in request.form:
-            return render_redirect_url_page(request.base_url)
+            return render_redirect_url_page()
     return render_template("feed/add_server.html", is_domain_set=False)
 
 
-def render_redirect_url_page(base_url):
+def render_redirect_url_page():
     """Helper function to handle the logic for redirecting users to the Mastodon OAuth flow
     Should inherit the request and session of add_server"""
 
@@ -106,7 +106,7 @@ def render_redirect_url_page(base_url):
         client_secret = app_token_obj.client_secret
         access_token = app_token_obj.access_token
     else:
-        client_id, client_secret, access_token = auth_api.add_domain_to_database(parsed_domain, base_url)
+        client_id, client_secret, access_token = auth_api.add_domain_to_database(parsed_domain)
         if client_id is None:
             logger.error("Domain {d} did not return a proper API response when adding it"
                          "to the database".format(d=domain))
@@ -114,7 +114,7 @@ def render_redirect_url_page(base_url):
         logger.info("New domain added to the database")
 
     auth_api.start_app_api_client(parsed_domain, client_id, client_secret, access_token)
-    url = auth_api.generate_redirect_url(request.base_url)
+    url = auth_api.generate_redirect_url()
     logger.info("Generated redirect url: {u}".format(u=url))
     return redirect(url)
 
@@ -167,7 +167,7 @@ def generate_auth_code_error_message(
         error = "Domain is required"
     return error
 
-@bp.route("/add_server/handle_oauth", methods=["GET"])
+@bp.route("/handle_oauth", methods=["GET"])
 def handle_outh():
     """Endpoint for the user to add a server to their existing list"""
     render_input_auth_code_page(request.args.get('code'))
