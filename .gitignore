@@ -32,3 +32,6 @@ pdm.lock
 ruff.toml
 .coverage
 .ruff_cache
+package-lock.json
+node_modules
+.stylelintrc.json
