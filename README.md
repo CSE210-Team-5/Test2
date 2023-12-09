@@ -24,7 +24,7 @@ Please follow the instructions below to run the application:
 
 ## Using Makefiles to use Linters and run Tests locally
 
-1. Use `npm install` to install Stylelint and ESLint.
+1. Use `npm install` to install stylelint and ESLint.
 2. Add configuration files to configration directory.
 3. Use following commands to run linter, test and test-coverage respectively,
 
