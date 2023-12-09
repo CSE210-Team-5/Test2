@@ -28,7 +28,6 @@ Please follow the instructions below to run the application:
 2. Add configuration files to configration directory.
 3. Use following commands to run linter, test and test-coverage respectively,
 
-`make lint`
-`make test`
+`make lint`  
+`make test`  
 `make test-coverage`
-
