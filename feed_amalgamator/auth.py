@@ -42,6 +42,7 @@ error = ""
 
 # Problem: We need to inject the database layer instead of just calling it like that to make testing easier
 
+
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":

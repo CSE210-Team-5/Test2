@@ -7,6 +7,7 @@ from feed_amalgamator import create_app
 
 class TestFeedPage(unittest.TestCase):
     """Tests the endpoints in the feed page. These are closely to functional/integration tests than unit tests"""
+
     def setUp(self) -> None:
         test_config_loc = Path("configuration/test_mastodon_client_info.ini")
         parser = configparser.ConfigParser()
@@ -15,9 +16,11 @@ class TestFeedPage(unittest.TestCase):
         test_db_name = parser["TEST_SETTINGS"]["test_db_location"]
 
         self.app = create_app(db_file_name=test_db_name)
-        self.app.config.update({
-            "TESTING": True,
-        })
+        self.app.config.update(
+            {
+                "TESTING": True,
+            }
+        )
 
         self.page_root = "feed"
 

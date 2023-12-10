@@ -105,7 +105,9 @@ def render_redirect_url_page():
 
     if not is_valid_domain:
         logger.error(
-            "User inputted domain {d} was not a valid mastodon domain." "Failed to render redirect url page".format(d=domain)
+            "User inputted domain {d} was not a valid mastodon domain." "Failed to render redirect url page".format(
+                d=domain
+            )
         )
         raise Exception  # TODO: We will need to standardize how to handle exceptions in the flask context.
 
@@ -117,7 +119,9 @@ def render_redirect_url_page():
     else:
         client_id, client_secret, access_token = auth_api.add_domain_to_database(parsed_domain)
         if client_id is None:
-            logger.error("Domain {d} did not return a proper API response when adding it" "to the database".format(d=domain))
+            logger.error(
+                "Domain {d} did not return a proper API response when adding it" "to the database".format(d=domain)
+            )
             return render_template("feed/add_server.html", is_domain_set=False, error=True)
         logger.info("New domain added to the database")
 
