@@ -21,7 +21,7 @@ jobs:
     - name: Log in to registry
       uses: docker/login-action@v2
       with:
-        registry: https://gchr.io/feed-amalgamator/
+        registry: https://gchr.io/cse210-team-5/feed-amalgamator/
         username: ${{ secrets.AzureAppService_ContainerUsername_d9f74ee8078843edb02877c1bbc0d7ff }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -42,7 +42,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: gchr.io/feed-amalgamator/Feed-Amalgamator:${{ github.sha }}
+        tags: gchr.io/cse210-team-5/feed-amalgamator/Feed-Amalgamator:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -60,4 +60,4 @@ jobs:
         app-name: 'FeedAmalgamator'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_9cda01e5ed4441acbb2bf60474ad5051 }}
-        images: 'gchr.io/feed-amalgamator/Feed-Amalgamator:${{ github.sha }}'
+        images: 'gchr.io/cse210-team-5/feed-amalgamator/Feed-Amalgamator:${{ github.sha }}'
