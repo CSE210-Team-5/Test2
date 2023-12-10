@@ -49,6 +49,20 @@
                         <span class="detailed-status-favourites">{{ post['favourites_count'] }}</span>
                     </div>
                     <div class="status-content">{{ post['content']|safe }}</div>
+                    <div>
+                        {% if post['media_attachments'] != [] %}
+                            {% for media in post['media_attachments'] %}
+                                {% if media['type'] == 'image' %}
+                                    <img src="{{ media.url }}" alt="{{ media.description }}" width="500px">
+                                {% elif media['type'] == 'video' %}
+                                    <video controls width="500px">
+                                        <source src="{{ media.url }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
             </article>
         {% endfor %}
