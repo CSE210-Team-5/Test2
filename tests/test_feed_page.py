@@ -41,9 +41,7 @@ class TestFeedPage(unittest.TestCase):
         client = self.app.test_client()
         add_server_url = "{r}/add_server".format(r=self.page_root)
         # Testing garbage domain field
-        self.assertRaises(
-            Exception, client.post, add_server_url, data={USER_DOMAIN_FIELD: "garbage"}
-        )
+        self.assertRaises(Exception, client.post, add_server_url, data={USER_DOMAIN_FIELD: "garbage"})
 
         # Testing proper field
         proper_domain = "mastodon.social"

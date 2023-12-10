@@ -100,9 +100,7 @@ class MastodonOAuthInterface:
             wanted_domain = parsed_input.path
         return wanted_domain
 
-    def start_app_api_client(
-        self, user_domain: str, client_id: str, client_secret: str, access_token: str
-    ):
+    def start_app_api_client(self, user_domain: str, client_id: str, client_secret: str, access_token: str):
         """
         Function to start the app client (client used by our app to authenticate users).
         This generated app client will be used to process user authorization requests
@@ -138,22 +136,15 @@ class MastodonOAuthInterface:
             try:
                 # It redirects the user to copy and paste an authorization code
                 # Note that it does NOT check if the url generated is valid
-                url = self.app_client.auth_request_url(
-                    redirect_uris=self.REDIRECT_URI, scopes=self.REQUIRED_SCOPES
-                )
+                url = self.app_client.auth_request_url(redirect_uris=self.REDIRECT_URI, scopes=self.REQUIRED_SCOPES)
                 return url
             except MastodonAPIError as err:
                 self.logger.error(
-                    "Encountered MastodonAPIError {e} in generate_redirect url. Retrying."
-                    "".format(e=err)
+                    "Encountered MastodonAPIError {e} in generate_redirect url. Retrying." "".format(e=err)
                 )
 
         # This following code will only run if the above code failed n times.
-        error_message = (
-            "Failed to generate url error after trying {n} times. Throwing error".format(
-                n=num_tries
-            )
-        )
+        error_message = "Failed to generate url error after trying {n} times. Throwing error".format(n=num_tries)
         self.logger.error(error_message)
         raise MastodonConnError(error_message)
 
@@ -183,16 +174,10 @@ class MastodonOAuthInterface:
                 self.logger.error(illegal_arg_error_msg)
                 raise InvalidApiInputError(illegal_arg_error_msg)
             except (ConnectionError, MastodonAPIError) as err:
-                self.logger.error(
-                    "Encountered {e} when trying to generate_user_access_token." "Retrying".format(
-                        e=err
-                    )
-                )
+                self.logger.error("Encountered {e} when trying to generate_user_access_token." "Retrying".format(e=err))
 
-        error_message = (
-            "Failed to generate user access token after trying {n} times. Throwing error".format(
-                n=num_tries
-            )
+        error_message = "Failed to generate user access token after trying {n} times. Throwing error".format(
+            n=num_tries
         )
         self.logger.error(error_message)
         raise MastodonConnError(error_message)
