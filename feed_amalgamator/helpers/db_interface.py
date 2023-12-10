@@ -36,3 +36,4 @@ class ApplicationTokens(dbi.Model):
     client_id: Mapped[str] = mapped_column(dbi.String, nullable=False, name="client_id")
     client_secret: Mapped[str] = mapped_column(dbi.String, nullable=False, name="client_secret")
     access_token: Mapped[str] = mapped_column(dbi.String, nullable=False, name="access_token")
+    redirect_uri: Mapped[str] = mapped_column(dbi.String, nullable=False, name="redirect_uri")

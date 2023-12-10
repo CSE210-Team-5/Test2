@@ -223,7 +223,7 @@ class MastodonOAuthInterface:
             response_dict_token = json.loads(response.text)
             access_token = response_dict_token['access_token']
             app_token = ApplicationTokens(server=domain_name, client_id=client_id, client_secret=client_secret,
-                                          access_token=access_token)
+                                          access_token=access_token, redirect_uri=self.REDIRECT_URI)
             dbi.session.add(app_token)
             dbi.session.commit()
             return client_id, client_secret, access_token
