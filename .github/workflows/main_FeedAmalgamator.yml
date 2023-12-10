@@ -22,7 +22,7 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://gchr.io/cse210-team-5/feed-amalgamator/
-        username: ${{ secrets.AzureAppService_ContainerUsername_d9f74ee8078843edb02877c1bbc0d7ff }}
+        username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup Directory
