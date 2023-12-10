@@ -14,12 +14,13 @@ class TestOauthInterface(unittest.TestCase):
         parser = configparser.ConfigParser()
         parser.read(test_config_loc)
         test_log_root = parser["TEST_SETTINGS"]["test_log_root"]
+        redirect_uri = parser["REDIRECT_URI"]["REDIRECT_URI"]
 
         logger_name = "oauth_interface_test"
         test_log_file = Path("{r}/{n}.log".format(r=test_log_root, n=logger_name))
         logger = LoggingHelper.generate_logger(logging.INFO, test_log_file, logger_name)
         self.logger = logger
-        self.client = MastodonOAuthInterface(logger)
+        self.client = MastodonOAuthInterface(logger, redirect_uri)
 
         tokens_dict = parser["APP_TOKENS"]
         self.client_domain = tokens_dict["CLIENT_DOMAIN"]  # Required to be passed in as a parameter

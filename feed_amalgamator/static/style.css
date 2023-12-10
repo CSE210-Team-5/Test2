@@ -166,6 +166,7 @@ li .username:hover {
 .enter-domain {
   text-align: center;
   color: white;
+  margin: 10px;
 }
 
 input[type="text"] {
@@ -199,6 +200,11 @@ input[type="text"] {
 .add-server-btn:hover {
   background-color: #563acc;
   cursor: pointer;
+}
+
+.flash{
+  text-align: center;
+  color: white;
 }
 
 .delete-server {
