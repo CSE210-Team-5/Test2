@@ -20,8 +20,9 @@ parser = configparser.ConfigParser()
 with open(CONFIG.path) as file:
     parser.read_file(file)
 log_file_loc = Path(parser["LOG_SETTINGS"]["feed_log_loc"])
+redirect_uri = parser["REDIRECT_URI"]["REDIRECT_URI"]
 logger = LoggingHelper.generate_logger(logging.INFO, log_file_loc, "feed_page")
-auth_api = MastodonOAuthInterface(logger)
+auth_api = MastodonOAuthInterface(logger, redirect_uri)
 data_api = MastodonDataInterface(logger)
 
 # TODO - Add Swagger/OpenAPI documentation
@@ -89,8 +90,6 @@ def add_server():
     if request.method == "POST":
         if USER_DOMAIN_FIELD in request.form:
             return render_redirect_url_page()
-        elif LOGIN_TOKEN_FIELD in request.form:
-            return render_input_auth_code_page()
     return render_template("feed/add_server.html", is_domain_set=False)
 
 
@@ -125,13 +124,13 @@ def render_redirect_url_page():
     auth_api.start_app_api_client(parsed_domain, client_id, client_secret, access_token)
     url = auth_api.generate_redirect_url()
     logger.info("Generated redirect url: {u}".format(u=url))
-    return render_template("feed/add_server.html", url=url, is_domain_set=True)
+    return redirect(url)
 
 
-def render_input_auth_code_page():
+def render_input_auth_code_page(auth_token):
     """Helper function to handle the logic for allowing users to input the auth code.
     Should inherit the request and session of add_server"""
-    auth_token = request.form[LOGIN_TOKEN_FIELD]
+    # auth_token = request.form[LOGIN_TOKEN_FIELD]
     user_id = session[USER_ID_FIELD]
     domain = session[USER_DOMAIN_FIELD]
 
@@ -176,6 +175,12 @@ def generate_auth_code_error_message(
         error = "Domain is required"
     return error
 
+@bp.route("/handle_oauth", methods=["GET"])
+def handle_outh():
+    """Endpoint for the user to add a server to their existing list"""
+    render_input_auth_code_page(request.args.get('code'))
+    flash('Server added Successfully!!')
+    return redirect("/feed/add_server")
 
 def render_user_servers():
     user_id = session[USER_ID_FIELD]
