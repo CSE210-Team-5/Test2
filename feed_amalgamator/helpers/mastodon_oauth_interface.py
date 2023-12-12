@@ -10,9 +10,12 @@ from urllib.parse import urlparse
 from http import HTTPStatus
 
 from mastodon import Mastodon, MastodonAPIError  # pip install Mastodon.py
+
+from feed_amalgamator.constants.error_messages import INVALID_MASTODON_DOMAIN_MSG, INVALID_JSON_RESPONSE_MSG
 from feed_amalgamator.helpers.custom_exceptions import (
     MastodonConnError,
     InvalidApiInputError,
+    ServiceUnavailableError,
 )
 from feed_amalgamator.helpers.db_interface import dbi, ApplicationTokens
 
@@ -53,27 +56,23 @@ class MastodonOAuthInterface:
         # Hardcoded endpoint for generally getting an instance's info
         endpoint_to_test = "https://{d}/api/v2/instance".format(d=wanted_domain)
         # As this is before any api client is created, we will use a simple https request
+        error_message = None
         try:
             headers = self._generate_headers_for_api_call()
             response = requests.get(endpoint_to_test, headers=headers)
             if response.status_code == HTTPStatus.OK:
                 wanted_domain = json.loads(response.content)["domain"]
                 return True, wanted_domain  # Obtain the cleansed content
-        except requests.exceptions.ConnectionError as e:
+        except requests.exceptions.ConnectionError:
             # If the user domain is invalid, it is indistinguishable from a connection error (cannot resolve
             # the domain of the redirected url)
-            # Increase granularity of http error logging (500?400?)
-            self.logger.error(
-                "ConnectionError {e} trying to verify user provided domain. User provided domain"
-                "is either invalid, or there is a connection problem".format(e=e)
-            )
+            error_message = "{msg_base}:{d}".format(msg_base=INVALID_MASTODON_DOMAIN_MSG,
+                                                    d=wanted_domain)
         except json.JSONDecodeError:
-            self.logger.error(
-                "JsonDecodeError {e}: Response obtained from server while verifying domain was "
-                "successful, but returned a value that cannot be parsed. Server is likely to "
-                "not be a legitimate server"
-            )
-        return False, ""  # Failed. Could be due to connection errors or wrong domain provided
+            error_message = "{msg_base}:{d}".format(msg_base=INVALID_JSON_RESPONSE_MSG,
+                                                    d=wanted_domain)
+
+        return False, error_message  # Failed. Could be due to connection errors or wrong domain provided
 
     def _generate_headers_for_api_call(self):
         """Generates standardized headers to be fed into a HTTP request. A lack of these headers
@@ -122,7 +121,9 @@ class MastodonOAuthInterface:
             self.app_client = client
         except (ConnectionError, MastodonAPIError) as err:
             self.logger.error("Encountered {e} when trying to start app_client".format(e=err))
-            raise MastodonConnError("API client failed to start")
+            raise ServiceUnavailableError({"message": "Mastodon API client failed to start",
+                                           "redirect_path": "feed/add_server.html"})
+
 
     def generate_redirect_url(self, num_tries=3) -> str:
         """
@@ -144,9 +145,8 @@ class MastodonOAuthInterface:
                 )
 
         # This following code will only run if the above code failed n times.
-        error_message = "Failed to generate url error after trying {n} times. Throwing error".format(n=num_tries)
-        self.logger.error(error_message)
-        raise MastodonConnError(error_message)
+        raise ServiceUnavailableError({"message": "Failed to generate url error after trying {n} times. Throwing error"
+                                      .format(n=num_tries), "redirect_path": "feed/add_server.html"})
 
     def generate_user_access_token(self, user_auth_code: str, num_tries=3) -> str:
         """
@@ -229,7 +229,9 @@ class MastodonOAuthInterface:
             dbi.session.add(app_token)
             dbi.session.commit()
             return client_id, client_secret, access_token
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             # Handle exceptions that might occur during the request
-            print(f"Error: {e}")
-            return None, None, None
+            raise ServiceUnavailableError({
+                "redirect_path": "feed/add_sever.html",
+                "message": "Something is wrong. Not sure if it us or Mastodon. Please try again later"
+            })

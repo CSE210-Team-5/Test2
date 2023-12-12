@@ -67,10 +67,21 @@
   });
 });
 
+    // Stop the form resubmission on page refresh
+
+    if ( window.history.replaceState ) {
+
+    window.history.replaceState( null, null, window.location.href );
+
+}
+
      </script>
 {% endblock %}
 
 {% block content %}
+        {% if error_message is not none %}
+        <h3>{{ error_message }}</h3>
+        {% endif %}
 <div class="register-container">
   <form method="post" class="register-form" novalidate> <!-- Removed onsubmit attribute -->
     <div id="error-message" class="error-message"></div>
